@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi ha comprato Milano · CISUR</title>
+<meta name="description" content="Un'inchiesta del CISUR. Nomi, fondi, cantieri, miliardi, chat agli atti: la mappa completa di chi possiede Milano.">
+<meta property="og:title" content="Chi ha comprato Milano · Indagine CISUR">
+<meta property="og:description" content="50 miliardi di asset dei fondi su Milano in dieci anni. 30 miliardi di capitali esteri. 76% dello stipendio in affitto. 74 indagati. 14.084 richieste di sfratto. Edilizia pubblica al 3,7%: tra le più basse d'Europa. Tutti i dati, tutte le fonti, tutti i link.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?w=1200&h=630&fit=crop&q=80">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,300;1,9..144,400;1,9..144,600&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f5f2ec;--paper:#fff;--ink:#0f0f0f;--dim:#777;--light:#aaa;--border:#ddd8d0;--red:#c41e1e;--red-pale:#fff2f2;--gold:#b8941e;--blue:#1b4f8a;--green:#1a6b4a;--mono:'JetBrains Mono',monospace;--display:'Fraunces',serif;--body:'Outfit',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.7;overflow-x:hidden}a{color:var(--red);text-decoration:none}a:hover{text-decoration:underline}::selection{background:var(--red);color:#fff}
+
+/* GRAIN OVERLAY */
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* SCAN LINE — subtle animated line that moves down */
+body::after{content:'';position:fixed;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);z-index:998;pointer-events:none;opacity:0;animation:scanDown 8s ease-in-out infinite}
+@keyframes scanDown{0%{top:0;opacity:0}5%{opacity:.3}50%{top:100%;opacity:.3}55%{opacity:0}100%{opacity:0}}
+
+/* PROGRESS */
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--red);z-index:999;width:0;transition:width .1s}
+
+/* NAV DOTS */
+#dots{position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:.5rem}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:none;cursor:pointer;transition:all .3s;position:relative}
+.dot.on{background:var(--red);transform:scale(1.3)}
+.dot::after{content:attr(data-t);position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.5rem;color:var(--dim);white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.dot:hover::after{opacity:1}
+
+/* REVEALS — more dramatic */
+.rv{opacity:0;transform:translateY(60px);transition:all 1.2s cubic-bezier(.16,1,.3,1)}.rv.vis{opacity:1;transform:none}
+.d1{transition-delay:.15s}.d2{transition-delay:.3s}.d3{transition-delay:.45s}.d4{transition-delay:.6s}
+/* Reveal from left/right for variety */
+.rv-l{opacity:0;transform:translateX(-60px);transition:all 1.2s cubic-bezier(.16,1,.3,1)}.rv-l.vis{opacity:1;transform:none}
+.rv-r{opacity:0;transform:translateX(60px);transition:all 1.2s cubic-bezier(.16,1,.3,1)}.rv-r.vis{opacity:1;transform:none}
+/* Scale reveal for numbers */
+.rv-s{opacity:0;transform:scale(.85);transition:all 1s cubic-bezier(.16,1,.3,1)}.rv-s.vis{opacity:1;transform:none}
+/* Blur reveal for photos */
+.rv-blur{opacity:0;filter:blur(8px);transition:all 1.6s cubic-bezier(.16,1,.3,1)}.rv-blur.vis{opacity:1;filter:none}
+
+/* HERO */
+.hero{min-height:100vh;position:relative;display:flex;align-items:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1610016302534-6f67f1c968d8?w=1920&q=80') center 30%/cover;filter:brightness(.35) saturate(.7);animation:heroZoom 20s ease-out forwards}
+@keyframes heroZoom{0%{transform:scale(1.12)}100%{transform:scale(1)}}
+/* Hero overlay grid */
+.hero::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 120px,rgba(196,30,30,.03) 120px,rgba(196,30,30,.03) 121px),repeating-linear-gradient(90deg,transparent,transparent 120px,rgba(196,30,30,.03) 120px,rgba(196,30,30,.03) 121px);pointer-events:none;z-index:1}
+/* Vignette */
+.hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 80%,transparent 30%,rgba(0,0,0,.5) 100%)}
+.hero-c{position:relative;z-index:2;padding:clamp(2rem,6vw,5rem);max-width:900px;color:#fff}
+.hero-pip{font-family:var(--mono);font-size:.56rem;font-weight:500;letter-spacing:.35em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:.7rem;margin-bottom:2rem}
+.hero-pip::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--red);animation:bk 2s ease-in-out infinite}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:var(--display);font-weight:200;font-size:clamp(3rem,9vw,7.5rem);line-height:.92;letter-spacing:-.04em;margin-bottom:1.5rem}
+.hero h1 em{font-style:italic;font-weight:600}
+.hero-thesis{font-family:var(--display);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:300;font-style:italic;color:rgba(255,255,255,.75);max-width:650px;margin-bottom:2rem;line-height:1.5}
+.hero-sub{font-size:clamp(.88rem,1.4vw,1rem);font-weight:300;color:rgba(255,255,255,.42);max-width:580px;margin-bottom:3rem}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap;padding-top:2rem;border-top:1px solid rgba(255,255,255,.12)}
+.hs .n{font-family:var(--mono);font-size:1.5rem;font-weight:700;line-height:1}.hs .n .u{font-size:.5em;font-weight:400;color:var(--red)}
+.hs .l{font-family:var(--mono);font-size:.46rem;color:rgba(255,255,255,.32);letter-spacing:.08em;text-transform:uppercase;margin-top:.3rem}
+.hs{opacity:0;transform:translateY(20px);animation:hsIn 1s cubic-bezier(.16,1,.3,1) forwards}
+.hs:nth-child(1){animation-delay:.6s}.hs:nth-child(2){animation-delay:.75s}.hs:nth-child(3){animation-delay:.9s}.hs:nth-child(4){animation-delay:1.05s}.hs:nth-child(5){animation-delay:1.2s}
+@keyframes hsIn{to{opacity:1;transform:none}}
+.sa{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.5rem;color:rgba(255,255,255,.22);text-align:center;animation:bob 2s ease-in-out infinite;z-index:3}
+@keyframes bob{0%,100%{transform:translateX(-50%)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* TICKER — enhanced */
+.ticker{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.7rem 0;background:var(--paper);position:relative}
+.ticker::before,.ticker::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--paper),transparent)}
+.ticker::after{right:0;background:linear-gradient(-90deg,var(--paper),transparent)}
+.ticker-t{display:flex;gap:3rem;animation:ts 55s linear infinite;width:max-content}
+@keyframes ts{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ti{font-family:var(--mono);font-size:.6rem;color:var(--dim);white-space:nowrap}.ti b{color:var(--ink)}.ti .r{color:var(--red);font-weight:600}
+
+/* LAYOUT */
+.w{max-width:860px;margin:0 auto;padding:0 clamp(1.5rem,5vw,3rem)}
+.sl{font-family:var(--mono);font-size:.53rem;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:var(--red);margin-top:7rem;margin-bottom:.5rem;position:relative;display:inline-block}
+.sl::after{content:'';display:inline-block;width:2rem;height:1px;background:var(--red);vertical-align:middle;margin-left:.8rem;opacity:.4}
+h2{font-family:var(--display);font-size:clamp(2rem,5vw,3.2rem);font-weight:200;line-height:1.08;letter-spacing:-.03em;margin-bottom:1.5rem}
+h2 em{font-style:italic;font-weight:600;color:var(--red)}
+p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var(--ink);font-weight:500}p strong{color:var(--red);font-weight:500}
+
+/* SOURCE LINKS */
+.src{font-family:var(--mono);font-size:.52rem;color:var(--light);margin-top:.2rem;margin-bottom:1.8rem;line-height:2}
+.src a{color:var(--dim);border-bottom:1px dotted var(--border);text-decoration:none;font-size:inherit}.src a:hover{color:var(--red);border-color:var(--red);text-decoration:none}
+
+/* GUIDE TEXT — enhanced */
+.guide{padding:clamp(3rem,8vw,6rem) clamp(1.5rem,5vw,3rem);text-align:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--paper);position:relative;overflow:hidden}
+.guide::before{content:'→';font-family:var(--mono);font-size:6rem;color:rgba(196,30,30,.04);position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.guide p{font-family:var(--display);font-size:clamp(1.15rem,2.5vw,1.7rem);font-weight:300;font-style:italic;color:var(--dim);max-width:550px;margin:0 auto;line-height:1.5;position:relative;z-index:1}
+
+/* THESIS — enhanced */
+.thesis{margin:3rem 0;padding:2.5rem 2.5rem 2.5rem 3rem;background:var(--paper);border-left:4px solid var(--red);position:relative;box-shadow:0 4px 30px rgba(0,0,0,.04)}
+.thesis::before{content:'❝';font-family:var(--display);font-size:3rem;color:rgba(196,30,30,.12);position:absolute;top:.5rem;left:.8rem;line-height:1}
+.thesis p{font-family:var(--display);font-size:clamp(1.05rem,2.2vw,1.35rem);font-weight:300;font-style:italic;color:var(--ink);line-height:1.5;margin:0}
+.thesis p b{font-weight:600;color:var(--red)}
+
+/* ANALYSIS (original cross-analysis) — enhanced */
+.analysis{background:var(--paper);border:1px solid var(--red);padding:2.5rem;margin:3rem 0;position:relative;box-shadow:0 0 0 4px rgba(196,30,30,.04)}
+.analysis::before{content:'ANALISI CISUR';font-family:var(--mono);font-size:.46rem;font-weight:700;letter-spacing:.4em;color:var(--red);position:absolute;top:-.4rem;left:1.5rem;background:var(--bg);padding:0 .6rem}
+/* Corner marks like a document scan */
+.analysis::after{content:'';position:absolute;top:8px;right:8px;width:16px;height:16px;border-top:2px solid var(--red);border-right:2px solid var(--red);opacity:.3}
+.analysis h3{font-family:var(--display);font-size:1.2rem;font-weight:400;margin-bottom:1rem}
+.analysis p{font-size:.92rem}
+.analysis .big{font-family:var(--mono);font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;color:var(--red);display:block;margin:.8rem 0;text-align:center;position:relative}
+.analysis .big::before,.analysis .big::after{content:'';position:absolute;top:50%;width:clamp(20px,8vw,60px);height:1px;background:var(--red);opacity:.2}
+.analysis .big::before{right:100%;margin-right:1rem}
+.analysis .big::after{left:100%;margin-left:1rem}
+
+/* PHOTO — parallax + enhanced */
+.pb{width:100vw;height:55vh;min-height:380px;position:relative;overflow:hidden;margin:5rem 0}
+.pb img{width:100%;height:120%;object-fit:cover;position:absolute;top:-10%;left:0;will-change:transform}
+.pb .cap{position:absolute;bottom:0;left:0;right:0;padding:2rem clamp(1.5rem,5vw,3rem);background:linear-gradient(transparent,rgba(0,0,0,.8));color:#fff;z-index:2}
+.pb .cap p{color:rgba(255,255,255,.7);font-size:.83rem;margin:0}.pb .cap b{color:#fff}
+/* Red line accent on photos */
+.pb::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--red);z-index:3}
+
+/* NUMBERS — enhanced with counter animation */
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--border);margin:2.5rem 0;border:1px solid var(--border)}
+.nb{background:var(--paper);padding:1.8rem 1.2rem;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.nb:hover{background:var(--red-pale);transform:translateY(-2px)}
+.nb::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:2px;background:var(--red);transition:all .4s;transform:translateX(-50%)}
+.nb:hover::after{width:100%}
+.nb .v{font-family:var(--mono);font-size:clamp(1.2rem,3vw,1.7rem);font-weight:700;color:var(--ink)}.nb .v .u{font-size:.55em;font-weight:400;color:var(--red)}
+.nb .d{font-family:var(--mono);font-size:.46rem;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-top:.3rem}
+
+/* ACTOR CARDS — enhanced */
+.actor{background:var(--paper);border:1px solid var(--border);margin-bottom:-1px;cursor:pointer;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative}
+.actor:hover{border-color:var(--red);box-shadow:0 8px 40px rgba(0,0,0,.08);transform:translateY(-2px);z-index:2}
+.actor.open{border-color:var(--red);box-shadow:0 12px 50px rgba(196,30,30,.1)}
+.actor.open::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}
+.ah{display:flex;justify-content:space-between;align-items:center;padding:1.3rem 1.8rem}
+.an{font-family:var(--display);font-size:1.1rem;font-weight:400}
+.ab{display:flex;align-items:center;gap:.7rem}
+.badge{font-family:var(--mono);font-size:.46rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .6rem;color:#fff;border-radius:2px;position:relative;overflow:hidden}
+.badge.bg-r::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:badgeShine 3s ease-in-out infinite}
+@keyframes badgeShine{0%{transform:translateX(-100%)}50%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+.bg-r{background:var(--red)}.bg-g{background:var(--gold)}.bg-b{background:var(--blue)}.bg-d{background:#999}
+.at{font-family:var(--mono);font-size:.7rem;color:var(--dim);transition:transform .3s}.actor.open .at{transform:rotate(45deg)}
+.abox{max-height:0;overflow:hidden;transition:max-height .7s cubic-bezier(.16,1,.3,1);padding:0 1.8rem}
+.actor.open .abox{max-height:2500px;padding-bottom:1.8rem}
+.abox p{font-size:.86rem;margin-bottom:.6rem}
+.ahl{background:var(--red-pale);border-left:3px solid var(--red);padding:.8rem 1.2rem;margin:.8rem 0;font-size:.86rem}
+
+/* EVIDENCE — dramatic treatment */
+.ev{background:var(--paper);border:1px solid var(--border);padding:1.8rem;margin:1.2rem 0;position:relative;transition:all .5s}
+.ev:hover{border-color:var(--red);box-shadow:0 4px 30px rgba(196,30,30,.08)}
+.ev::before{content:attr(data-l);font-family:var(--mono);font-size:.44rem;font-weight:700;letter-spacing:.35em;color:var(--red);position:absolute;top:-.4rem;left:1.5rem;background:var(--bg);padding:0 .5rem;text-transform:uppercase}
+/* Red pulse dot */
+.ev::after{content:'';position:absolute;top:1.8rem;right:1.5rem;width:6px;height:6px;border-radius:50%;background:var(--red);animation:evPulse 2.5s ease-in-out infinite}
+@keyframes evPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(196,30,30,.3)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(196,30,30,0)}}
+.evt{font-family:var(--mono);font-size:.62rem;font-weight:600;color:var(--ink);margin-bottom:.5rem}
+.evq{font-family:var(--mono);font-size:.78rem;color:var(--ink);line-height:1.7}.evq em{font-style:normal;color:var(--red);font-weight:600;background:rgba(196,30,30,.06);padding:.1em .3em}
+.evs{font-family:var(--mono);font-size:.5rem;color:var(--light);margin-top:.6rem}
+.evs a{font-size:inherit;color:var(--dim);text-decoration:none;border-bottom:1px dotted var(--border)}.evs a:hover{color:var(--red)}
+
+/* CHART */
+.cw{background:var(--paper);border:1px solid var(--border);padding:2rem;margin:2.5rem 0}
+.cw .ct{font-family:var(--mono);font-size:.55rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:1.2rem}
+.cw canvas{max-height:340px}
+
+/* CYCLE — animated arrows */
+.cycle{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin:2.5rem 0;position:relative}
+.cy{background:var(--paper);padding:1.3rem;position:relative;transition:all .3s}
+.cy:hover{background:var(--red-pale)}
+.cy::before{content:attr(data-n);font-family:var(--mono);font-size:1.8rem;font-weight:700;color:#f0ede8;position:absolute;top:.4rem;right:.8rem;transition:color .3s}
+.cy:hover::before{color:rgba(196,30,30,.1)}
+/* Arrow between steps */
+.cy:not(:last-child)::after{content:'→';position:absolute;right:-0.6rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.7rem;color:var(--red);z-index:2;background:var(--bg);padding:.1rem}
+.cy h4{font-family:var(--mono);font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--red);margin-bottom:.4rem}
+.cy p{font-size:.78rem;margin:0;color:var(--dim)}
+
+/* NETWORK */
+.nw{width:100%;height:450px;background:#0f0f0f;border:1px solid var(--border);margin:2.5rem 0;position:relative;overflow:hidden}
+.nw canvas{width:100%;height:100%}
+.nw-l{position:absolute;bottom:.8rem;left:1.2rem;font-family:var(--mono);font-size:.44rem;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:.2em}
+
+/* MAP */
+.map-container{position:relative;max-width:700px;margin:2.5rem auto;background:var(--paper);border:1px solid var(--border);padding:2rem}
+.map-container .ct{font-family:var(--mono);font-size:.55rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:1.2rem}
+.map-container canvas{display:block;margin:0 auto}
+.map-tooltip{position:absolute;background:var(--ink);color:#fff;font-family:var(--mono);font-size:.65rem;padding:.6rem 1rem;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10;max-width:220px;line-height:1.6}
+.map-tooltip .tt-name{font-weight:600;font-size:.72rem;margin-bottom:.2rem}
+.map-tooltip .tt-price{color:var(--red);font-weight:700}
+.map-legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:1.2rem;justify-content:center}
+.map-legend span{font-family:var(--mono);font-size:.5rem;color:var(--dim);display:flex;align-items:center;gap:.3rem}
+.map-legend span::before{content:'';width:10px;height:10px;border-radius:2px}
+.ml-1::before{background:#8b1a1a}.ml-2::before{background:#c41e1e}.ml-3::before{background:#e8a838}.ml-4::before{background:#d4a574}.ml-5::before{background:#e8dcc8}
+
+/* FINDING — dramatic finale */
+.finding{background:var(--ink);color:#fff;padding:clamp(5rem,12vw,10rem) clamp(1.5rem,5vw,3rem);text-align:center;margin-top:5rem;position:relative;overflow:hidden}
+.finding::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(196,30,30,.08),transparent 60%)}
+/* Animated grid bg */
+.finding::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,.015) 60px,rgba(255,255,255,.015) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,.015) 60px,rgba(255,255,255,.015) 61px);pointer-events:none}
+.finding h2{color:#fff;margin-bottom:.5rem;position:relative;z-index:1}.finding h2 em{color:var(--red)}
+.finding .sub{font-family:var(--display);font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:300;font-style:italic;color:rgba(255,255,255,.5);position:relative;z-index:1}
+.finding .fs{font-family:var(--mono);font-size:.5rem;color:rgba(255,255,255,.2);margin-top:2rem;letter-spacing:.2em;position:relative;z-index:1}
+
+/* SHARE */
+.share-section{background:var(--ink);padding:0 clamp(1.5rem,5vw,3rem) clamp(4rem,8vw,6rem);text-align:center}
+.share-section p{color:rgba(255,255,255,.5);font-size:.9rem;max-width:500px;margin:0 auto 2rem}
+.share-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.share-btn{font-family:var(--mono);font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.8rem 1.5rem;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);background:transparent;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}
+.share-btn:hover{border-color:var(--red);color:#fff;background:var(--red);text-decoration:none}
+.tg-section{padding:2rem clamp(1.5rem,5vw,3rem) clamp(4rem,8vw,6rem);background:var(--ink);text-align:center;border-top:1px solid rgba(255,255,255,.06)}
+.tg-section p{color:rgba(255,255,255,.35);font-size:.8rem;max-width:450px;margin:0 auto 1.2rem}
+.tg-btn{font-family:var(--mono);font-size:.6rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:.8rem 2rem;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);background:transparent;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}
+.tg-btn:hover{border-color:#0088cc;color:#0088cc;text-decoration:none}
+
+/* TIMELINE */
+.tl{position:relative;padding:2rem 0 2rem 2.5rem;margin:2.5rem 0}
+.tl::before{content:'';position:absolute;left:.6rem;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-i{position:relative;margin-bottom:1.8rem}
+.tl-i::before{content:'';position:absolute;left:-2.15rem;top:.35rem;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--bg);z-index:1;transition:all .3s}
+.tl-i.hot::before{background:var(--red);box-shadow:0 0 0 3px rgba(196,30,30,.15)}
+.tl-i:hover::before{transform:scale(1.3)}
+.tl-i.hot .tl-d{color:var(--red)}
+.tl-d{font-family:var(--mono);font-size:.55rem;font-weight:600;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem}
+.tl-t{font-family:var(--display);font-size:.95rem;font-weight:400;color:var(--ink);margin-bottom:.2rem}
+.tl-p{font-size:.82rem;color:#666;margin:0;line-height:1.5}
+
+/* COLOPHON */
+.colo{text-align:center;padding:3rem 1.5rem;background:var(--bg)}
+.colo p{font-family:var(--mono);font-size:.5rem;color:var(--light);letter-spacing:.1em;line-height:2.2}
+.colo a{color:var(--dim);font-size:inherit}
+
+@media(max-width:640px){.hero-stats{gap:1.2rem}.nums{grid-template-columns:repeat(2,1fr)}.cycle{grid-template-columns:1fr}#dots{display:none}.hero h1{font-size:2.8rem}.share-btns{flex-direction:column;align-items:center}}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="dots"></nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero sec" data-nav="Apertura">
+<div class="hero-bg"></div>
+<div class="hero-c">
+<div class="hero-pip rv">CISUR &bull; Indagine #001 &bull; Marzo 2026</div>
+<h1 class="rv d1">Chi ha <em>comprato</em> Milano</h1>
+<p class="hero-thesis rv d2">Nomi, fondi, cantieri, chat agli atti. La mappa completa di chi possiede una città da un milione e quattrocentomila persone, e di chi l'ha persa.</p>
+<p class="hero-sub rv d3">Un'indagine del CISUR, Centro Indipendente di Studi Urbani e Residenziali. Ogni cifra ha un link. Ogni fonte è pubblica: bilanci societari, atti giudiziari, ISTAT, Ministero dell'Interno, cronaca giudiziaria. Tempo di lettura: 25 minuti.</p>
+<div class="hero-stats rv">
+<div class="hs"><div class="n">50<span class="u">mld</span></div><div class="l">Asset fondi su Milano</div></div>
+<div class="hs"><div class="n">76<span class="u">%</span></div><div class="l">Stipendio in affitto</div></div>
+<div class="hs"><div class="n">14.084</div><div class="l">Richieste sfratto 2024</div></div>
+<div class="hs"><div class="n">74</div><div class="l">Indagati</div></div>
+<div class="hs"><div class="n">3,7<span class="u">%</span></div><div class="l">ERP Italia (media UE 9%)</div></div>
+</div>
+</div>
+<div class="sa">↓ Scorri per leggere</div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-t" id="tk"></div></div>
+
+<!-- GUIDE 1 -->
+<div class="guide rv"><p>Questa indagine procede in dodici sezioni. Ogni numero ha una fonte. Segui il filo: porta ai nomi.</p></div>
+
+<!-- ===== I. IL PREZZO ===== -->
+<div class="w sec" data-nav="Il prezzo">
+<div class="sl rv">Sezione I</div>
+<h2 class="rv">Il <em>prezzo</em> di Milano</h2>
+
+<p class="rv">Un operaio che lavora a Milano, con il suo stipendio, può comprare <b>19 metri quadri</b>. Un insegnante, 21. Un infermiere, 23. Per comprare un bilocale di 60 mq in semicentro servono 141 mensilità nette: quasi 12 anni senza mangiare, senza vestirsi, senza pagare una bolletta. Intanto l'affitto: bilocale in semicentro, 1.350 euro al mese. Stipendio netto medio di un lavoratore singolo: 1.820 euro. Il <b>76% del reddito</b> se ne va nel canone. Il calcolo è semplice: 1.350 diviso 1.820. L'Indice di Accessibilità Abitativa (HAI) della Cassa Depositi e Prestiti conferma il dato e colloca Milano in testa alla classifica nazionale, seguita da Bolzano e Roma. La soglia critica internazionale è il 30%: oltre quel limite una famiglia entra in area di sofferenza economica. Milano è a due volte e mezzo quella soglia. In media, in Italia l'affitto pesa per il 35% delle retribuzioni nette: già sopra il limite. A Milano il doppio della media nazionale.</p>
+<div class="src rv"><a href="https://www.pmi.it/economia/mercati/484035/affitti-il-conto-sale-a-milano-fino-al-76-dello-stipendio-ecco-la-mappa-nazionale.html" target="_blank">PMI.it, "Affitti: a Milano fino al 76% dello stipendio"</a> · <a href="https://www.milanofinanza.it/news/caro-affitti-stipendi-sotto-pressione-nelle-grandi-citta-la-casa-divora-il-reddito-dei-lavoratori-202512171437274464" target="_blank">MilanoFinanza, dic 2025</a> · <a href="https://www.cdp.it" target="_blank">CDP, Rapporto sulla casa e indice IFAL</a></div>
+
+<p class="rv">Nel 2015, un metro quadro in affitto costava 14,7 euro al mese. Oggi ne costa 23,4: <strong>+59% in dieci anni</strong>. Nello stesso periodo, i salari reali italiani sono scesi dell'1,5%. I canoni salgono. Gli stipendi scendono. In mezzo: le persone che a Milano ci vivono.</p>
+<div class="src rv"><a href="https://www.immobiliare.it/mercato-immobiliare/" target="_blank">Immobiliare.it</a> · <a href="https://www.oecd.org/en/data/indicators/average-wages.html" target="_blank">OECD, Average Wages Italy</a></div>
+
+<div class="cw rv">
+<div class="ct">La forbice: canoni vs salari (2015 = 100)</div>
+<canvas id="ch1"></canvas>
+</div>
+
+<div class="analysis rv">
+<h3>La forbice che si apre</h3>
+<p>Canoni: +59%. Salari reali: −1,5%. Risultato netto:</p>
+<span class="big">+61% di divario in 10 anni</span>
+<p>Nel 2015 servivano 8 anni di stipendio netto per comprare 60 mq in semicentro. Oggi ne servono <b>11,7</b>. Nessun aumento salariale previsto colmerà questa distanza. La forbice continua ad aprirsi.</p>
+</div>
+
+<div class="nums rv-s">
+<div class="nb"><div class="v">94.400<span class="u">€</span></div><div class="d">Reddito lordo Duomo</div></div>
+<div class="nb"><div class="v">18.500<span class="u">€</span></div><div class="d">Reddito lordo Q. Oggiaro</div></div>
+<div class="nb"><div class="v">5:1</div><div class="d">Rapporto tra i due</div></div>
+<div class="nb"><div class="v">19<span class="u">mq</span></div><div class="d">Comprare da operaio</div></div>
+<div class="nb"><div class="v">21<span class="u">mq</span></div><div class="d">Da insegnante</div></div>
+<div class="nb"><div class="v">141</div><div class="d">Mensilità per 60mq</div></div>
+</div>
+<div class="src rv"><a href="https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php" target="_blank">MEF, Statistiche fiscali per CAP</a> · <a href="https://www.agenziaentrate.gov.it/portale/web/guest/schede/fabbricatiterreni/omi" target="_blank">OMI, Agenzia Entrate</a></div>
+
+<div class="cw rv">
+<div class="ct">Mq acquistabili per professione · Milano 2025</div>
+<canvas id="ch2"></canvas>
+</div>
+
+<!-- MAPPA QUARTIERI — canvas radiale -->
+<div class="map-container rv">
+<div class="ct">Prezzo al metro quadro per zona · Milano 2025</div>
+<div class="map-tooltip" id="map-tip"></div>
+<canvas id="milan-map" width="700" height="700" style="width:100%;height:auto;cursor:crosshair"></canvas>
+<div class="map-legend">
+<span class="ml-1">> 7.000 €/mq</span>
+<span class="ml-2">5.000–7.000</span>
+<span class="ml-3">3.500–5.000</span>
+<span class="ml-4">2.500–3.500</span>
+<span class="ml-5">< 2.500</span>
+</div>
+</div>
+
+<p class="rv">La mappa racconta una città divisa in due. Nel CAP 20121 (Duomo), il reddito lordo medio è 94.400 euro. Nel CAP 20157 (Quarto Oggiaro), 18.500 euro. Rapporto: cinque a uno. Il mercato immobiliare segue la stessa logica, ma amplificata: il prezzo al metro quadro in centro è cinque volte quello della periferia, e la periferia stessa si sta spostando verso l'alto. A Corvetto, i prezzi sono passati da 3.700 a oltre 4.500 euro al metro quadro dall'inizio dei cantieri olimpici: +21% in due anni, il doppio della media cittadina.</p>
+<div class="src rv"><a href="https://www1.finanze.gov.it/finanze/analisi_stat/public/index.php" target="_blank">MEF, Statistiche fiscali per CAP</a> · <a href="https://www.linkiesta.it/2024/12/no-corvetto-non-e-la-banlieue-di-milano/" target="_blank">Linkiesta, dic 2024</a></div>
+
+<div class="cw rv">
+<div class="ct">Incidenza affitto su reddito · Confronto città italiane (lavoratore singolo, canone medio)</div>
+<canvas id="ch-eu"></canvas>
+</div>
+</div>
+
+<!-- PHOTO -->
+<div class="pb rv-blur"><img src="https://images.unsplash.com/photo-1515263487990-61b07816b324?w=1600&q=80" alt="Palazzo residenziale periferia" loading="lazy"><div class="cap"><p><b>Periferia sud, Milano.</b> Prezzi al mq da 3.700 a oltre 4.500 € dall'inizio dei cantieri olimpici. +21% in due anni. Chi vive qui paga il conto di cantieri che non ha chiesto.</p></div></div>
+
+<!-- GUIDE -->
+<div class="guide rv"><p>Questi prezzi hanno dei nomi. Eccoli.</p></div>
+
+<!-- ===== II. CHI COMPRA ===== -->
+<div class="w sec" data-nav="Chi compra">
+<div class="sl rv">Sezione II</div>
+<h2 class="rv">Chi ha <em>comprato</em></h2>
+
+<p class="rv">QIA possiede gli edifici. Coima li gestisce. Il Qatar è il padrone di casa. I Catella sono i portinai. I milanesi sono gli inquilini. Ogni scheda che segue contiene solo informazioni pubbliche: comunicati aziendali, atti giudiziari, articoli di stampa. Apri le schede per i dettagli e le fonti.</p>
+
+<div class="actor rv" onclick="this.classList.toggle('open')">
+<div class="ah"><div class="an">Qatar Investment Authority → Porta Nuova</div><div class="ab"><span class="badge bg-r">Fondo sovrano</span><span class="at">+</span></div></div>
+<div class="abox"><p>Patrimonio globale: <b>$557 miliardi</b>. Il fondo sovrano del Qatar, attraverso Qatar Holding, possiede il <b>100% del Progetto Porta Nuova</b> dal febbraio 2015: una ventina di edifici su circa 290.000 mq di aree ex dismesse, tra cui la Torre Unicredit (231 metri, il grattacielo più alto d'Italia), il Bosco Verticale, la Torre Solaria, il Diamante, piazza Gae Aulenti e tutto il retail da lì fino a Corso Como. Nel 2013 aveva acquisito il 40%; nel 2015 ha comprato il restante 60% dai fondi originari (tra cui Hines, Unipol, la stessa Coima). Valore stimato: oltre 2 miliardi di euro. Portafoglio Italia complessivo: circa 5 miliardi. Piazza Gae Aulenti è una piazza privata ad uso pubblico. I milanesi ci passeggiano, ci mangiano, ci lavorano. Gli edifici intorno appartengono a uno Stato del Golfo Persico.</p><div class="src"><a href="https://st.ilsole24ore.com/art/notizie/2015-02-27/a-fondo-qatar-tutti-grattacieli-milano-porta-nuova-122532.shtml" target="_blank">Il Sole 24 Ore, 27 feb 2015</a> · <a href="https://www.ilfattoquotidiano.it/2015/02/27/porta-nuova-fondo-sovrano-qatar-sale-100-dei-grattacieli-milanesi/1462728/" target="_blank">Il Fatto Quotidiano, 27 feb 2015</a></div></div>
+</div>
+
+<div class="actor rv" onclick="this.classList.toggle('open')">
+<div class="ah"><div class="an">COIMA SGR · Manfredi Catella</div><div class="ab"><span class="badge bg-r">Arrestato lug 2025</span><span class="at">+</span></div></div>
+<div class="abox"><p>Circa 30 fondi, oltre <b>10 miliardi</b> in gestione, investitori da Singapore, Qatar, Abu Dhabi. <b>Arrestato il 31 luglio 2025</b> per corruzione e falso. Ai domiciliari con l'ex assessore Tancredi. La Cassazione ha confermato la revoca delle misure cautelari a novembre 2025, ma l'indagine prosegue.</p>
+<p>La Procura ha contestato <b>12 cantieri</b> come illegali: approvati senza piano attuativo, in violazione di distanze, altezze, volumetrie e standard urbanistici. Tra questi: aree Porta Nuova Gioia, il Pirellino, lo Scalo di Porta Romana.</p>
+<div class="ahl">Il procuratore Viola: <em>"Il fenomeno, legato ad alcuni profili di incontrollata espansione edilizia, ha assunto dimensioni di rilievo notevolissimo."</em></div>
+<div class="src"><a href="https://www.ilgiorno.it/milano/cronaca/urbanistica-decisioni-gip-arresti-ls01220l" target="_blank">Il Giorno, 31 lug 2025</a> · <a href="https://www.fanpage.it/milano/inchiesta-urbanistica-dodici-progetti-di-manfredi-catella-sono-abusivi-ce-anche-lo-studentato-scalo-romana/" target="_blank">Fanpage, 28 ago 2025</a> · <a href="https://www.ilfattoquotidiano.it/2025/11/13/inchiesta-urbanistica-milano-cassazione-catella-news/8194315/" target="_blank">Il Fatto, 13 nov 2025</a></div></div>
+</div>
+
+<div class="actor rv" onclick="this.classList.toggle('open')">
+<div class="ah"><div class="an">Hines Italia</div><div class="ab"><span class="badge bg-g">Sviluppatore</span><span class="at">+</span></div></div>
+<div class="abox"><p><b>8 miliardi</b> investiti in 10 anni, 6 su Milano. Gestisce il marchio "Aparto" per studentati: Bovisa (610 posti), Giovenale, Ripamonti. Gli studenti pagano tra 700 e 1.100 euro al mese per una stanza. Lo chiamano student housing. Il nome tecnico è: asset class con rendimento al 4,5%.</p><div class="src"><a href="https://financecommunity.it/ardian-e-rockfield-real-estate-effettuano-un-nuovo-investimento-a-milano-di-student-housing/" target="_blank">Financecommunity, mag 2025</a></div></div>
+</div>
+
+<div class="actor rv" onclick="this.classList.toggle('open')">
+<div class="ah"><div class="an">Blackstone / Kryalos · Bottelli</div><div class="ab"><span class="badge bg-r">Indagato</span><span class="at">+</span></div></div>
+<div class="abox"><p>Blackstone detiene il 35% di Kryalos. Masse in gestione: 14 miliardi. Paolo Bottelli è tra gli indagati. L'operazione Montenapoleone 8, venduta a Kering per 1,3 miliardi, ha ripagato da sola l'intero portafoglio. Una singola transazione su un singolo palazzo nel cuore di Milano vale più dell'intero bilancio annuale del Comune per l'edilizia residenziale pubblica.</p><div class="src"><a href="https://www.milanofinanza.it/news/caos-urbanistica-a-milano-la-procura-chiede-l-arresto-dell-assessore-giancarlo-tancredi-e-del-ceo-di-202507161043079776" target="_blank">MilanoFinanza, 16 lug 2025</a></div></div>
+</div>
+
+<div class="actor rv" onclick="this.classList.toggle('open')">
+<div class="ah"><div class="an">Ardian / Rockfield</div><div class="ab"><span class="badge bg-b">Private equity</span><span class="at">+</span></div></div>
+<div class="abox"><p><b>12 operazioni in 6 mesi</b>, 6.000 posti letto in Europa, 2.000 in Italia. A Milano: Bovisa (610 posti, acquisita da Hines), viale Certosa (427 posti). Rendimenti target: <b>4,5%</b>. Per il private equity, le stanze degli studenti universitari sono un prodotto finanziario come un altro.</p><div class="src"><a href="https://www.borsaitaliana.it/borsa/notizie/teleborsa/economia/ardian-e-rockfield-nuovo-investimento-a-milano-per-studentato-69_2025-05-13_TLB.html" target="_blank">Borsa Italiana, mag 2025</a> · <a href="https://www.idealista.it/news/immobiliare/residenziale/2026/02/09/322803-student-housing-1-500-nuovi-posti-letto-tra-milano-bordeaux-e-barcellona" target="_blank">Idealista, feb 2026</a></div></div>
+</div>
+
+<div class="actor rv" onclick="this.classList.toggle('open')">
+<div class="ah"><div class="an">Lendlease · Covivio · Generali · Prada · AXA IM</div><div class="ab"><span class="badge bg-d">Istituzionali</span><span class="at">+</span></div></div>
+<div class="abox"><p><b>Lendlease</b>: MIND da 4 miliardi (concessione 99 anni) e Santa Giulia da 2,7 miliardi. <b>Covivio</b>: l'88% del portafoglio Italia (2,6 miliardi) è concentrato su Milano, ed è nella cordata dello Scalo Porta Romana. <b>Generali Real Estate</b>: circa 7 miliardi di patrimonio immobiliare milanese. <b>Prada Holding</b>: nella cordata Scalo Romana. <b>AXA IM</b>: oltre il 50% degli investimenti italiani su Milano. La concentrazione è totale.</p></div>
+</div>
+</div>
+
+<!-- PHOTO -->
+<div class="pb rv-blur"><img src="https://images.unsplash.com/photo-1513581166391-887a96ddeafd?w=1600&q=80" alt="Skyline Milano" loading="lazy"><div class="cap"><p><b>Porta Nuova.</b> Il progetto immobiliare simbolo della nuova Milano: una ventina di edifici, 290.000 mq, Torre Unicredit, Bosco Verticale, piazza Gae Aulenti. 100% del Qatar Investment Authority dal 2015.</p></div></div>
+
+<!-- GUIDE -->
+<div class="guide rv"><p>Questi attori operano attraverso rapporti documentati con l'amministrazione. Le chat sono agli atti della Procura.</p></div>
+
+<!-- ===== III. LE PROVE ===== -->
+<div class="w sec" data-nav="Le prove">
+<div class="sl rv">Sezione III</div>
+<h2 class="rv">La porta <em>girevole</em></h2>
+
+<p class="rv">Le chat che seguono sono state sequestrate dalla Guardia di Finanza e depositate agli atti dell'inchiesta. Sono pubbliche, riportate dalla stampa con indicazione della fonte giudiziaria. Vanno lette nell'ordine: raccontano un sistema.</p>
+
+<div class="ev rv" data-l="Chat agli atti"><div class="evt">Catella → Sala</div><div class="evq">"Dai ragazzi adesso <em>sbloccateci</em> su questi progetti plz caffè quando vuoi"</div><div class="evs"><a href="https://www.ilgiorno.it/milano/cronaca/urbanistica-decisioni-gip-arresti-ls01220l" target="_blank">Atti Procura Milano · Il Giorno, 31 lug 2025</a></div></div>
+
+<div class="ev rv" data-l="Chat agli atti"><div class="evt">Tancredi → Catella, luglio 2024</div><div class="evq">"Detto in amicizia, se con lo studentato Villaggio Olimpico uscite con <em>tariffe medie 900/1000 iva inclusa per noi è un problema molto serio</em>. Ci fate attaccare dalla stampa."</div><div class="evs"><a href="https://www.fanpage.it/milano/interessi-privati-e-pressioni-politiche-perche-il-villaggio-olimpico-allo-scalo-romana-e-illegittimo/" target="_blank">Fanpage, 28 ago 2025</a></div></div>
+
+<div class="ev rv" data-l="Chat agli atti"><div class="evt">Boeri → Catella</div><div class="evq">"Marinoni appoggia <em>totalmente</em> questa ipotesi e lo farà in Commissione"</div><div class="evs"><a href="https://www.ilgiorno.it/milano/cronaca/urbanistica-decisioni-gip-arresti-ls01220l" target="_blank">Il Giorno, 31 lug 2025</a></div></div>
+
+<div class="ev rv" data-l="Chat agli atti"><div class="evt">Boeri → Catella</div><div class="evq">"Giovanna Melandri cerca appartamento figlia 18enne, budget <em>450.000</em>"</div><div class="evs"><a href="https://www.iltempo.it/politica/2025/07/31/news/milano-inchiesta-urbanistica-arresti-domiciliari-manfredi-catella-giancarlo-tancredi-43574215/" target="_blank">Il Tempo, 31 lug 2025</a></div></div>
+
+<p class="rv"><b>Marinoni</b>: dalla Fondazione Catella (2019) alla Presidenza della Commissione Paesaggio (2022). La Procura lo definisce <b>"fulcro della corruzione"</b>: 13 conflitti d'interesse, oltre 400.000 euro di parcelle da soggetti su cui votava in Commissione. Da J+S dell'architetto <b>Federico Pella</b> riceve 370.000 euro: la Procura ipotizza un <b>"patto corruttivo"</b> per mettere le mani sul futuro di San Siro. <b>Scandurra</b>: arrestato, parcelle da Coima (28.548 euro), da Castello SGR di <b>Giampiero Schiavo</b> (321.000 euro), da Bluestone di <b>Andrea Bezziccheri</b> (cinque episodi di corruzione contestati, unico finito in carcere, con 6,5 milioni di trasferimenti da Jersey). <b>Oggioni</b>: ex direttore dello Sportello Unico Edilizia, poi vicepresidente della Commissione Paesaggio, arrestato marzo 2025. Insieme all'architetto <b>Marco Cerri</b> (interdetto un anno dai pubblici uffici) ha scritto gli emendamenti del <b>Salva Milano</b>, la legge pensata per neutralizzare le indagini. Secondo la Procura, hanno fatto pressione sui parlamentari Foti, Lupi e Morelli per farli approvare.</p>
+<div class="src rv"><a href="https://www.ilgiorno.it/milano/cronaca/inchiesta-urbanistica-arresti-perquisizioni-w73m18fo" target="_blank">Il Giorno, 16 lug 2025</a> · <a href="https://www.idealista.it/news/immobiliare/costruzioni/2025/07/16/254775-la-procura-di-milano-chiede-l-arresto-di-sei-persone-accuse-di-corruzione-sull" target="_blank">Idealista, 16 lug 2025</a> · <a href="https://www.fanpage.it/milano/inchiesta-urbanistica-il-gip-marco-cerri-e-stato-protagonista-della-salva-milano-per-bloccare-le-indagini/" target="_blank">Fanpage, Cerri e il Salva Milano</a> · <a href="https://www.editorialedomani.it/fatti/indagine-arresti-milano-urbanistica-tangenti-salva-milano-governo-partiti-tommaso-foti-ydj2773z" target="_blank">Domani, pressioni sui parlamentari</a></div>
+
+<p class="rv"><b>74 indagati</b> in totale, su più filoni. Sala e Malangone per induzione indebita. Boeri indagato anche per il Pirellino (chat con Sala: <b>"bocciato il mio progetto su San Siro, attenzione, si crea un grave precedente"</b>). L'ex vicesindaca <b>Ada Lucia De Cesaris</b> indagata per aver passato informazioni riservate a Cerri. Schiavo (Castello SGR), Bottelli (Kryalos). Nel solo primo filone chiuso, <b>36 persone verso il processo</b>. La Corte dei Conti ha aperto <b>10 istruttorie per danno erariale</b>: stima preliminare, <b>85 milioni di euro</b> di danni alle casse pubbliche. A dicembre 2025, sequestrata la <b>Torre Unico Brera</b> (27 indagati, monolocali a 700.000 euro). A marzo 2026, sequestrato il cantiere di <b>via Papiniano</b>. La Procura descrive il sistema come un <b>"PGT ombra"</b> al servizio di una <b>"vasta speculazione edilizia"</b> rimasta <b>"indisturbata"</b> per anni.</p>
+<div class="src rv"><a href="https://www.ilfattoquotidiano.it/2025/10/14/urbanistica-milano-chiuso-uno-dei-filoni-dellinchiesta-in-36-verso-il-processo-i-pm-aree-cedute-a-vile-prezzo/8160732/" target="_blank">Il Fatto, 14 ott 2025</a> · <a href="https://www.ilgiorno.it/milano/cronaca/urbanistica-il-maxi-danno-erariale-dieci-ad92d302" target="_blank">Il Giorno, Corte dei Conti</a> · <a href="https://tg24.sky.it/cronaca/2025/12/11/torre-unico-brera-sequestro-inchiesta-urbanistica-milano" target="_blank">Sky TG24, Torre Unico Brera</a> · <a href="https://www.lapresse.it/cronaca/2026/03/11/inchiesta-urbanistica-milano-sequestrato-il-cantiere-di-via-papiniano-e-accolto-ricorso-pm-dal-2024-non-ce-buona-fede/" target="_blank">LaPresse, via Papiniano, mar 2026</a></div>
+
+<div class="cycle rv">
+<div class="cy" data-n="1"><h4>Investitore</h4><p>Presenta progetto al Comune</p></div>
+<div class="cy" data-n="2"><h4>Commissione</h4><p>Membro riceve incarichi dall'investitore</p></div>
+<div class="cy" data-n="3"><h4>Assessore</h4><p>Media tra investitore e commissione</p></div>
+<div class="cy" data-n="4"><h4>Approvazione</h4><p>Via SCIA, senza piano attuativo</p></div>
+<div class="cy" data-n="5"><h4>Legge</h4><p>Emendamenti per neutralizzare le indagini</p></div>
+</div>
+</div>
+
+<!-- ===== IV. SALVA MILANO ===== -->
+<div class="w sec" data-nav="Salva Milano">
+<div class="sl rv">Sezione IV</div>
+<h2 class="rv">La legge che <em>salva</em> gli indagati</h2>
+
+<p class="rv">Nel maggio 2024, il vicepremier Salvini e il sindaco Sala concordano al telefono la necessità di una norma che sblocchi i cantieri fermati dalla Procura. A luglio, l'emendamento al Decreto Salva Casa viene ritirato dopo le prime polemiche. Ma il progetto non muore: rinasce come disegno di legge autonomo, il ddl 1987. Il 21 novembre 2024, la Camera lo approva. Il contenuto è tecnico in apparenza: consentire demolizione e ricostruzione in zone urbanizzate con semplice SCIA, senza piano attuativo. L'effetto pratico: rendere legali retroattivamente le operazioni che la Procura contesta come abusive.</p>
+<div class="src rv"><a href="https://tg24.sky.it/economia/approfondimenti/decreto-salva-milano-cos-e" target="_blank">Sky TG24, "Decreto Salva Milano, cos'è e cosa prevede"</a> · <a href="https://www.avvenire.it/attualita/pagine/salva-milano-cosa-prevede-la-legge-salva-cantieri" target="_blank">Avvenire, "Tutto sul Salva Milano"</a></div>
+
+<p class="rv">Le intercettazioni depositate agli atti raccontano chi ha scritto quella legge. L'architetto <b>Marco Cerri</b>, interdetto dai pubblici uffici per un anno, rivendica in una telefonata del 24 ottobre 2024 la paternità del testo: <b>"L'ho fatto io, l'ho dato a Foti"</b>. In un'altra intercettazione precisa che <b>"la prima bozza mi arriva da Lupi"</b>. Cerri è indagato. Lupi è il leader di Noi Moderati. Foti, allora capogruppo di Fratelli d'Italia, è oggi Ministro per gli Affari Europei. Il senatore della Lega Alessandro Morelli, anche lui contattato da Cerri e dall'ex dirigente comunale <b>Giovanni Oggioni</b> (arrestato il 5 marzo 2025), è sottosegretario alla Presidenza del Consiglio.</p>
+<div class="src rv"><a href="https://www.ilfattoquotidiano.it/2025/03/05/speculazione-edilizia-lindagato-rivendicava-di-aver-scritto-il-salva-milano-lho-fatto-io-lho-dato-a-foti-la-prima-bozza-mi-arriva-da-lupi/7901044/" target="_blank">Il Fatto Quotidiano, 5 mar 2025</a> · <a href="https://www.fanpage.it/milano/inchiesta-urbanistica-cosi-gli-architetti-oggioni-e-cerri-avrebbero-scritto-la-legge-salva-milano-con-i-parlamentari/" target="_blank">Fanpage, "Così Oggioni e Cerri scrivono il Salva Milano"</a> · <a href="https://www.ilgiorno.it/milano/cronaca/indagine-urbanistica-ic6114ij" target="_blank">Il Giorno, "Il pressing su Foti, Lupi, Morelli"</a></div>
+
+<div class="ev rv" data-l="Intercettazione agli atti"><div class="evt">Cerri, telefonata del 24 ottobre 2024</div><div class="evq">"<em>L'ho fatto io, l'ho dato a Foti.</em> La prima bozza mi arriva da Lupi."</div><div class="evs"><a href="https://www.ilfattoquotidiano.it/2025/03/05/speculazione-edilizia-lindagato-rivendicava-di-aver-scritto-il-salva-milano-lho-fatto-io-lho-dato-a-foti-la-prima-bozza-mi-arriva-da-lupi/7901044/" target="_blank">Il Fatto Quotidiano, 5 mar 2025</a></div></div>
+
+<p class="rv">Il GIP di Milano Mattia Fiorentini scrive nell'ordinanza: è evidente il <b>"palese coinvolgimento degli indagati nella Salva Milano"</b>, e Cerri ne è stato <b>"protagonista per bloccare le indagini dei pm"</b>. Il 5 marzo 2025, lo stesso giorno dell'arresto di Oggioni, il Comune di Milano annuncia che non sosterrà più il provvedimento. La giunta Sala si sfila. Si costituisce parte civile. Il ddl resta impantanato al Senato, dove Fratelli d'Italia e Lega temporeggiavano già prima. A luglio 2025, l'ANSA titola: "Salva Milano impantanato al Senato, ora rischia decadenza". La legge che doveva salvare i cantieri non salva nessuno, perché quei cantieri erano il problema.</p>
+<div class="src rv"><a href="https://www.fanpage.it/milano/inchiesta-urbanistica-il-gip-marco-cerri-e-stato-protagonista-della-salva-milano-per-bloccare-le-indagini/" target="_blank">Fanpage, ordinanza GIP su Cerri</a> · <a href="https://www.ilpost.it/2025/03/06/milano-non-sostiene-legge-salva-milano-urbanistica/" target="_blank">Il Post, "Milano non sostiene più il Salva Milano"</a> · <a href="https://www.ansa.it/sito/notizie/politica/2025/07/17/a-che-punto-e-il-decreto-salva-milano-impantanato-al-senato-ora-rischia-decadenza_5c3651cb-08b8-4de2-b346-521da3333276.html" target="_blank">ANSA, 17 lug 2025</a></div>
+
+<div class="thesis rv">
+<p>Le persone indagate per aver violato le norme urbanistiche hanno scritto la legge per cambiare quelle norme. L'hanno consegnata ai parlamentari che l'hanno presentata in Aula. L'hanno chiamata Salva Milano. Il GIP l'ha chiamata con un altro nome: <b>un tentativo di bloccare le indagini dei pm</b>.</p>
+</div>
+
+<div class="tl rv">
+<div class="tl-i"><div class="tl-d">Maggio 2024</div><div class="tl-t">Salvini e Sala concordano la norma</div><div class="tl-p">Telefonata tra il vicepremier e il sindaco per "chiarire il destino" dei cantieri contestati dalla Procura.</div></div>
+<div class="tl-i"><div class="tl-d">Luglio 2024</div><div class="tl-t">Emendamento al Salva Casa ritirato</div><div class="tl-p">Alla Camera, le proposte di modifica al DL 69/2024 vengono ritirate. Ma nasce il ddl 1987.</div></div>
+<div class="tl-i"><div class="tl-d">Ottobre 2024</div><div class="tl-t">Cerri rivendica la paternità del testo</div><div class="tl-p">Intercettazione: "L'ho fatto io, l'ho dato a Foti. La prima bozza mi arriva da Lupi."</div></div>
+<div class="tl-i hot"><div class="tl-d">21 Novembre 2024</div><div class="tl-t">La Camera approva il Salva Milano</div><div class="tl-p">Il ddl 1987 passa. Voto trasversale. Scritto da indagati, votato dal Parlamento.</div></div>
+<div class="tl-i hot"><div class="tl-d">5 Marzo 2025</div><div class="tl-t">Oggioni arrestato, il Comune si sfila</div><div class="tl-p">La giunta Sala ritira il sostegno. Si costituisce parte civile. Il ddl resta in commissione al Senato.</div></div>
+<div class="tl-i"><div class="tl-d">Luglio 2025</div><div class="tl-t">Il Salva Milano si avvia alla decadenza</div><div class="tl-p">Impantanato in commissione Ambiente. FdI e Lega temporeggiavano. FI insisteva. Nessuno lo vota più.</div></div>
+</div>
+</div>
+
+<!-- ===== V. ONERI URBANISTICI ===== -->
+<div class="w sec" data-nav="Oneri">
+<div class="sl rv">Sezione V</div>
+<h2 class="rv">Gli oneri <em>regalati</em></h2>
+
+<p class="rv">Per quindici anni, dal 2007 al 2023, il Comune di Milano ha lasciato invariate le tabelle degli oneri di urbanizzazione. Quindici anni in cui il valore degli immobili è raddoppiato, triplicato. I costruttori pagavano le tariffe del 2007 su cantieri del 2022. Chi avrebbe dovuto aggiornare quelle tabelle? L'amministrazione comunale. Chi non lo ha fatto? L'amministrazione comunale. Chi ne ha beneficiato? I grandi operatori immobiliari.</p>
+<div class="src rv"><a href="https://www.arcipelagomilano.org/archives/62212" target="_blank">ArcipelagoMilano, "I regali del Comune agli immobiliaristi"</a></div>
+
+<p class="rv">Il meccanismo tecnico è la SCIA, la Segnalazione Certificata di Inizio Attività: uno strumento pensato per ristrutturazioni leggere, usato sistematicamente per autorizzare interventi che la legge classificherebbe come nuove costruzioni. La differenza è sostanziale: una nuova costruzione richiede un piano attuativo, il rispetto di distanze e altezze, il pagamento di oneri proporzionali. Una SCIA salta tutti questi passaggi. La Procura lo ha detto con chiarezza: <b>"il fulcro della questione riguarda progetti autorizzati come semplici ristrutturazioni anziché come nuove costruzioni"</b>.</p>
+
+<div class="nums rv-s">
+<div class="nb"><div class="v">47<span class="u">mln</span></div><div class="d">Oneri incassati 2015</div></div>
+<div class="nb"><div class="v">188<span class="u">mln</span></div><div class="d">Oneri incassati 2024</div></div>
+<div class="nb"><div class="v">+300<span class="u">%</span></div><div class="d">Dopo l'aggiornamento</div></div>
+<div class="nb"><div class="v">15</div><div class="d">Anni senza aggiornamento</div></div>
+</div>
+<div class="src rv"><a href="https://www.arcipelagomilano.org/archives/62212" target="_blank">ArcipelagoMilano</a> · Bilancio Comune di Milano, entrate da oneri urbanizzazione</div>
+
+<p class="rv">Il salto da 47 milioni a 188 milioni dopo l'aggiornamento delle tabelle racconta l'entità del regalo: per anni, i grandi operatori immobiliari hanno pagato un quarto di quello che avrebbero dovuto. I soldi mancanti avrebbero dovuto finanziare scuole, verde pubblico, case popolari, infrastrutture di quartiere. Dove sono finiti? Nei margini dei fondi. Quanto vale il regalo? Lo dice il Comune stesso, con i suoi bilanci: l'aggiornamento ha quadruplicato gli incassi. I quindici anni precedenti sono quindici anni di trasferimento dal pubblico al privato.</p>
+</div>
+
+<!-- ===== VI. OLIMPIADI ===== -->
+<div class="w sec" data-nav="Olimpiadi">
+<div class="sl rv">Sezione VI</div>
+<h2 class="rv">Le Olimpiadi come <em>acceleratore</em></h2>
+
+<p class="rv">Cinque miliardi di investimenti diretti. Proiezione a otto entro il 2030. Valore aggiunto stimato per il mercato immobiliare: <strong>19 miliardi</strong>. Diciannove miliardi di euro di valore immobiliare generato da un evento sportivo di due settimane. La domanda che nessuno fa: generato per chi? Risposta: per chi possiede gli immobili. Per i fondi che hanno comprato prima, per le sgr che gestiscono i cantieri, per gli investitori che incassano l'aumento. Per i residenti di Corvetto che si vedono raddoppiare l'affitto, il valore è una condanna.</p>
+<div class="src rv"><a href="https://www.milanofinanza.it/news/effetto-olimpiadi-sull-immobiliare-a-milano-affitti-alle-stelle-e-prezzi-ai-massimi-storici-l-eredita-202601100940349968" target="_blank">MilanoFinanza, 10 gen 2026</a> · <a href="https://www.we-wealth.com/news/olimpiadi-invernali-2026-immobiliare-dove-investire-milano" target="_blank">We Wealth, 5 feb 2026</a></div>
+
+<div class="nums rv-s">
+<div class="nb"><div class="v">+65<span class="u">%</span></div><div class="d">Affitti brevi centro storico</div></div>
+<div class="nb"><div class="v">+83<span class="u">%</span></div><div class="d">Porta Nuova</div></div>
+<div class="nb"><div class="v">+153<span class="u">%</span></div><div class="d">Assago</div></div>
+<div class="nb"><div class="v">+25<span class="u">%</span></div><div class="d">Canoni Corvetto in 6 mesi</div></div>
+</div>
+<div class="src rv"><a href="https://www.monitorimmobiliare.it/monitorimmobiliare/notizia/olimpiadi-milano-cortina-2026-forte-impatto-sul-mercato-immobiliare-di-milano-e-hinterland_2026-01-1654834/" target="_blank">MonitorImmobiliare, gen 2026</a> · <a href="https://dhome-re.it/milano-cortina-2026-affitti-brevi-allee-prezzi-di-vendita-stelle/" target="_blank">DHOME, gen 2026</a></div>
+
+<p class="rv">Il <b>Comitato Insostenibili Olimpiadi</b> lo ha detto per primo. A febbraio 2024, un corteo di 500 persone ha attraversato Milano con cinque cerchi olimpici riscrittti: <b>cementificazione, gentrificazione, greenwashing, sfratti, privatizzazione</b>. Nessun quotidiano nazionale ha aperto con la notizia. I numeri che seguono spiegano perché quel corteo aveva ragione.</p>
+
+<p class="rv">A Corvetto, zona del Villaggio Olimpico, i prezzi di vendita sono passati da 3.700 a 4.500 euro al metro quadro in due anni. I canoni di affitto sono aumentati del 25% in sei mesi. Chi viveva lì da trent'anni, con contratti a 500 euro, si è trovato richieste di rinnovo a 750. Chi non rinnova, esce. Chi esce, non torna.</p>
+
+<div class="thesis rv">
+<p>Lo Scalo di Porta Romana è stato acquistato da Coima in cordata con Covivio e Prada per <b>180 milioni</b>: unica offerta rimasta delle sette iniziali dopo una modifica delle regole di gara. Per la Procura, al privato è stata riconosciuta una <b>"massiccia volumetria"</b> con una <b>"pianificazione priva di interesse pubblico"</b>. Lo Scalo ospita il Villaggio Olimpico. Dopo le Olimpiadi, il Villaggio diventerà il più grande studentato convenzionato d'Italia: <b>1.700 posti letto</b>, 670 telecamere, iscrizioni già aperte per l'anno accademico 2026/27. La conversione è prevista in quattro mesi, la più rapida nella storia dei Giochi olimpici.</p>
+</div>
+<div class="src rv"><a href="https://www.fanpage.it/milano/interessi-privati-e-pressioni-politiche-perche-il-villaggio-olimpico-allo-scalo-romana-e-illegittimo/" target="_blank">Fanpage, 28 ago 2025</a> · <a href="https://www.coima.com/it/media/comunicati-stampa/coima-presenta-il-villaggio-olimpico-e-futuro-studentato" target="_blank">Coima, set 2025</a> · <a href="https://www.ilgiorno.it/milano/cronaca/villaggio-olimpico-wtlr6myt" target="_blank">Il Giorno, "Villaggio Olimpico pronto: diventerà studentato"</a></div>
+
+<p class="rv">A quali tariffe? L'assessore Tancredi, nella chat agli atti, lo dice a Catella: <b>"tariffe medie 900/1000 per noi è un problema serio"</b>. Il problema non è che siano alte. Il problema è che il problema è politico, non economico. Nessuno contesta il prezzo in sé. Contestano l'esposizione mediatica.</p>
+
+<p class="rv">Il Villaggio è solo un pezzo della macchina. Il <b>PalaItalia</b>, l'arena di hockey da 15.000 posti a Santa Giulia, ha visto i costi lievitare da 170 a oltre 200 milioni di euro. Il governo ha stanziato 51 milioni aggiuntivi (21 ad agosto 2025, altri 30 a novembre) per coprire gli extracosti di Lendlease. L'arena è stata utilizzata per eventi ufficiali mentre era ancora incompleta. <b>Santa Giulia</b> nel suo insieme è un progetto da 2,7 miliardi di Lendlease: quartiere residenziale, commerciale e terziario che ridisegna il sud-est di Milano. <b>MIND</b>, il Milano Innovation District nell'area dell'ex Expo, è una concessione novantanovennale a Lendlease da 4 miliardi. In totale, un singolo operatore australiano gestisce trasformazioni urbane per quasi 7 miliardi su Milano. L'urgenza olimpica ha funzionato come un acceleratore di deroghe: scadenze strette, procedure semplificate, fondi pubblici aggiuntivi. Tutto ciò che la pianificazione ordinaria avrebbe imposto di discutere viene compresso nell'imperativo "bisogna essere pronti per febbraio".</p>
+<div class="src rv"><a href="https://www.ilsole24ore.com/art/milano-cortina-boom-costi-il-palaitalia-e-villaggio-olimpico-AFKg95qD" target="_blank">Il Sole 24 Ore, "Boom dei costi per il PalaItalia"</a> · <a href="https://blog.urbanfile.org/2025/11/01/milano-morsenchio-rogoredo-cantiere-arena-olimpica-santa-giulia-dal-governo-30-milioni-di-euro-in-piu-per-il-pala-italia/" target="_blank">Urbanfile, 1 nov 2025</a> · <a href="https://www.infobuild.it/approfondimenti/olympic-games-2026-milano-cortina-nuovi-progetti-mercato-immobiliare/" target="_blank">Infobuild, "I progetti per l'Olympic Games 2026"</a></div>
+</div>
+
+<!-- PHOTO -->
+<div class="pb rv-blur"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=80" alt="Cantiere" loading="lazy"><div class="cap"><p><b>Cantiere Milano.</b> I progetti di rigenerazione urbana hanno cambiato lo skyline e la composizione sociale dei quartieri. L'edilizia residenziale pubblica è passata da 65.986 a 62.457 alloggi in sei anni.</p></div></div>
+
+<!-- ===== VII. STUDENTATI ===== -->
+<div class="w sec" data-nav="Studentati">
+<div class="sl rv">Sezione VII</div>
+<h2 class="rv">Student housing: <em>asset class</em></h2>
+
+<p class="rv">Milano ha 190.000 studenti universitari. Circa 50.000 sono fuorisede. I posti letto disponibili in residenze studentesche: 14.500. Solo il 6,8% dei fuorisede trova posto. Il restante 93% entra nel mercato privato degli affitti e compete con i residenti per gli stessi appartamenti, nelle stesse zone, agli stessi prezzi. Il numero preciso è questo: <b>35.500 studenti</b> che cercano casa a Milano come tutti gli altri, ma con i soldi dei genitori, e quindi disposti a pagare di più.</p>
+<div class="src rv"><a href="https://www.skuola.net/news/notizie-universita/inchiesta-milano-studentati-privati-rischio-7mila-posti.html" target="_blank">Skuola.net, lug 2025</a> · <a href="https://www.ilgiorno.it/milano/cronaca/in-arrivo-7208-posti-letto-pero-non-bastano-fb027403" target="_blank">Il Giorno, lug 2024</a> · <a href="https://pagellapolitica.it/articoli/milano-posti-letto-studenti-scarsa-trasparenza" target="_blank">Pagella Politica</a></div>
+
+<div class="analysis rv">
+<h3>Il triangolo: studenti, Airbnb, sfratti</h3>
+<span class="big">35.500 studenti nel mercato privato</span>
+<p>50.000 fuorisede meno 14.500 posti in residenza: il resto compete con i residenti per gli stessi appartamenti.</p>
+<p>Accanto a loro: <b>18.800 Airbnb</b> che sottraggono unità al mercato residenziale. L'Università di Milano-Bicocca ha misurato l'effetto: nelle zone ad alta concentrazione di affitti brevi, l'impatto sui canoni residenziali è tra il <b>5 e il 7%</b>. Significa che ogni nuovo Airbnb spinge in alto l'affitto del vicino di casa. L'effetto non è teorico: ai Navigli, dove il 12% delle unità abitative è su piattaforme turistiche, i canoni di lungo periodo sono saliti del 42%. Le 14.084 richieste di sfratto depositate nel 2024 sono il risultato di questa pressione combinata: studenti nel mercato privato, affitti brevi che alzano i prezzi, famiglie che non reggono.</p>
+<span class="big">+5/7% sui canoni per ogni quartiere ad alta concentrazione Airbnb</span>
+<p>Il Villaggio Olimpico diventerà il più grande studentato d'Italia con 1.700 posti, a tariffe che l'assessore Tancredi considerava politicamente insostenibili. A Venezia, uno studentato Camplus è stato scoperto ad affittare le stanze ai turisti a 150 euro a notte fuori dal periodo accademico.</p>
+</div>
+<div class="src rv"><a href="https://alleyoop.ilsole24ore.com/2024/09/02/emergenza-abitativa-la-denuncia-degli-studenti-studiare-fuorisede-e-diventato-un-lusso/" target="_blank">Alley Oop / Il Sole 24 Ore, set 2024</a> · <a href="https://www.milanofinanza.it/news/in-italia-decollano-i-progetti-di-studentati-per-gli-investitori-rendimenti-fino-al-4-5-202501250959019987" target="_blank">MilanoFinanza, gen 2025</a></div>
+</div>
+
+<!-- ===== VIII. SFRATTI ===== -->
+<div class="w sec" data-nav="Sfratti">
+<div class="sl rv">Sezione VIII</div>
+<h2 class="rv">1.597 famiglie <em>fuori</em></h2>
+
+<p class="rv">Nel 2019, prima della pandemia, gli sfratti eseguiti con la forza pubblica a Milano erano circa 900. Poi la moratoria Covid: il governo blocca tutto dal marzo 2020 al dicembre 2021. Nel 2020 gli sfratti eseguiti crollano a 78. Nel 2023, ancora 133: l'arretrato si accumula, i tribunali non smaltiscono. Nel 2024 il sistema esplode: <b>1.597 sfratti eseguiti</b>, <b>14.084 richieste di esecuzione</b> depositate. I numeri dicono due cose contemporaneamente: la prima è che parte del balzo è lo smaltimento dell'arretrato post-moratoria. La seconda è che 14.084 richieste depositate in un anno non sono un arretrato, sono un flusso: più di quattro famiglie al giorno che ricevono una notifica di sfratto. E il flusso cresce perché i canoni crescono, e i canoni crescono perché la città è stata trasformata in un asset.</p>
+<div class="src rv"><a href="https://www.ilfattoquotidiano.it/2025/09/26/sfratti-italia-caro-affitti-milano-notizie/8139939/" target="_blank">Il Fatto Quotidiano, 26 set 2025</a> · <a href="https://ucs.interno.gov.it" target="_blank">Ministero dell'Interno, dati 2024</a> · <a href="https://www.zappyrent.com/it/blog/blocco-degli-sfratti-dalla-pandemia-ad-oggi-cosa-e-cambiato/" target="_blank">Zappyrent, "Blocco degli sfratti: dalla pandemia ad oggi"</a></div>
+
+<p class="rv">Il meccanismo è ciclico e si autoalimenta. Una famiglia viene sfrattata. L'appartamento entra nel mercato degli affitti brevi o viene ristrutturato e riaffittato a prezzo più alto. Il prezzo medio del quartiere sale. Il proprietario dell'appartamento accanto chiede un canone più alto al rinnovo. L'inquilino non può pagare. Viene sfrattato. Il suo appartamento entra nel mercato degli affitti brevi. Il prezzo del quartiere sale ancora. È un ciclo che si nutre di sé stesso, e ad ogni giro espelle qualcuno.</p>
+
+<div class="nums rv-s">
+<div class="nb"><div class="v">1.597</div><div class="d">Sfratti eseguiti 2024</div></div>
+<div class="nb"><div class="v">14.084</div><div class="d">Richieste esecuzione</div></div>
+<div class="nb"><div class="v">500</div><div class="d">Case popolari assegnate</div></div>
+<div class="nb"><div class="v">17.000</div><div class="d">Domande presentate</div></div>
+<div class="nb"><div class="v">62.457</div><div class="d">Alloggi ERP rimasti</div></div>
+<div class="nb"><div class="v">−3.529</div><div class="d">Alloggi persi in 6 anni</div></div>
+</div>
+<div class="src rv"><a href="https://www.milanopost.info/2025/05/21/allarme-sfratti-a-milano-oltre-2000-casi-nel-2024-la-crisi-abitativa-si-aggrava/" target="_blank">Milano Post, mag 2025</a></div>
+
+<p class="rv">Ultimo bando per le case popolari: <b>500 assegnate su 17.000 domande</b>. Tre famiglie su cento ottengono un alloggio. Le altre novantasette restano in lista d'attesa. Il patrimonio di edilizia residenziale pubblica scende: da 65.986 a 62.457 unità in sei anni, 3.529 alloggi in meno. Il Comune perde case popolari mentre il numero delle famiglie che ne avrebbero bisogno cresce. Qualcuno ha chiesto perché? Qualcuno ha chiesto dove sono finiti quei 3.529 alloggi?</p>
+
+<div class="thesis rv">
+<p>Il <b>8 ottobre 2025</b>, a Sesto San Giovanni, <b>Letterio Buonomo</b>, 71 anni, si è gettato dal balcone quando l'ufficiale giudiziario si è presentato per eseguire lo sfratto. Due settimane prima si era rivolto per la prima volta al Comune per chiedere informazioni sugli alloggi popolari. Non aveva avuto risposta.</p>
+</div>
+<div class="src rv"><a href="https://ilmanifesto.it/milano-lo-sfrattano-e-si-getta-dal-balcone" target="_blank">Il Manifesto, 8 ott 2025</a></div>
+</div>
+
+<!-- ===== IX. AIRBNB ===== -->
+<div class="w sec" data-nav="Airbnb">
+<div class="sl rv">Sezione IX</div>
+<h2 class="rv">18.800 <em>Airbnb</em></h2>
+
+<p class="rv">18.800 appartamenti a Milano sono su Airbnb a gennaio 2026. Erano 16.200 nel 2024: 2.600 in più in un anno. Ai Navigli, il 12% delle unità abitative è in affitto breve. Il risultato? Canoni di lungo periodo nella zona: +42%. L'Università di Milano-Bicocca ha misurato l'effetto diretto: nelle zone ad alta concentrazione di Airbnb, l'impatto sui canoni residenziali è tra il <b>5 e il 7%</b>. Ogni nuovo Airbnb spinge in alto l'affitto del vicino di casa.</p>
+<div class="src rv">AirDNA, gen 2026 · Università Bicocca, studio impatto STR · <a href="https://ec.europa.eu" target="_blank">Commissione Europea, studio affitti brevi 2024</a></div>
+
+<p class="rv">Il 33% dei nuovi host registrati durante la Design Week resta attivo in modo permanente. Un evento di una settimana converte appartamenti residenziali in turistici. Quelli non tornano indietro. Le Olimpiadi sono la Design Week moltiplicata per cento: due settimane che cambiano il mercato immobiliare per i prossimi dieci anni.</p>
+</div>
+
+<!-- ===== X. IL RICAMBIO ===== -->
+<div class="w sec" data-nav="Il ricambio">
+<div class="sl rv">Sezione X</div>
+<h2 class="rv">Chi va, <em>chi viene</em></h2>
+<p class="rv">Fine 2025: <b>1.399.079 residenti</b>. 7.965 in meno dell'anno prima. In dieci anni, 488.000 nuove iscrizioni anagrafiche e 400.000 cancellazioni. Un terzo della popolazione è stato sostituito. Chi arriva: giovani professionisti, studenti, lavoratori temporanei. Chi parte: famiglie con figli nella fascia 35-64, residenti storici dei quartieri popolari. Giambellino, Barona, Ticinese: −2,5% di popolazione. La città non si svuota: si ricambia. Entrano persone che restano poco, spendono molto, non votano alle comunali. Una città ideale per chi la possiede: clienti, non cittadini.</p>
+<div class="src rv"><a href="https://www.istat.it" target="_blank">ISTAT, bilancio demografico</a> · Comune di Milano, Settore Statistica</div>
+</div>
+
+<!-- ===== XI. LA RETE ===== -->
+<div class="sec" data-nav="La rete">
+<div class="w"><div class="sl rv">Sezione XI</div><h2 class="rv">La <em>rete</em></h2><p class="rv">Fondi sovrani, sgr, private equity, commissioni comunali, assessorati, studi di architettura. Le linee che li collegano sono documentate negli atti della Procura e nei bilanci societari. La mappa che segue ricostruisce le connessioni.</p></div>
+<div class="nw rv"><canvas id="net"></canvas><div class="nw-l">Connessioni da fonti giudiziarie e societarie · Muovi il mouse per esplorare</div></div>
+</div>
+
+<!-- ===== XII. LA STRUTTURA ===== -->
+<div class="w sec" data-nav="La struttura">
+<div class="sl rv">Sezione XII</div>
+<h2 class="rv">La struttura <em>circolare</em></h2>
+
+<p class="rv">In dieci anni, dal 2015 al 2025, i fondi immobiliari hanno accumulato oltre <b>50 miliardi di euro</b> in asset su Milano. Di questi, circa <b>30 miliardi</b> sono capitali esteri. Milano concentra il 41% dell'intero patrimonio dei fondi immobiliari italiani e attrae il 55% degli investimenti stranieri nel settore, un dato superiore alla media europea del 46%. Questi numeri raccontano la scala dell'operazione: Milano è il principale punto di estrazione di valore immobiliare dell'Europa meridionale.</p>
+<div class="src rv"><a href="https://www.editorialedomani.it/fatti/milano-inchiesta-urbanistica-peso-fondi-immobiliari-in-un-decennio-comprata-mezza-citta-d40x4s4t" target="_blank">Domani, "Il peso dei fondi immobiliari: così in un decennio hanno comprato mezza città"</a> · <a href="https://www.ilriformista.it/a-milano-30-miliardi-di-investimenti-immobiliari-stranieri-porta-nuova-e-un-caso-emblematico-497163/" target="_blank">Il Riformista, "30 miliardi di investimenti stranieri"</a> · <a href="https://www.monitorimmobiliare.it/monitorimmobiliare/notizia/jll-milano-si-conferma-polo-di-attrazione-per-gli-investimenti-immobiliari-in-italia_2024-09-3010133/" target="_blank">MonitorImmobiliare / JLL, set 2024</a></div>
+
+<div class="nums rv-s">
+<div class="nb"><div class="v">50<span class="u">mld</span></div><div class="d">Asset fondi su MI (10 anni)</div></div>
+<div class="nb"><div class="v">30<span class="u">mld</span></div><div class="d">Di cui capitali esteri</div></div>
+<div class="nb"><div class="v">55<span class="u">%</span></div><div class="d">Investimenti esteri su MI</div></div>
+<div class="nb"><div class="v">5,5<span class="u">%</span></div><div class="d">Rendimento residenziale</div></div>
+</div>
+
+<p class="rv">Il rendimento medio del residenziale milanese è il <b>5,5% annuo</b>: il più basso tra le grandi città italiane (Torino è al 7,2%, Napoli al 6,8%), ma applicato su masse enormi. Su 50 miliardi di asset, un rendimento del 5,5% produce 2,75 miliardi di euro all'anno di flusso estrattivo. Quei soldi escono dalla città sotto forma di canoni, plusvalenze, dividendi. Chi li paga? Gli inquilini, le aziende, gli studenti che affittano. Dove vanno? Ai fondi di Singapore, del Qatar, degli Stati Uniti, del Lussemburgo. Il prezzo di un bilocale a Corvetto finanzia il rendimento di un fondo sovrano. Questa è la struttura del trasferimento.</p>
+<div class="src rv"><a href="https://m.dellevittorie.it/rendimenti-immobiliari-terzo-trimestre-2024-idealista/" target="_blank">Idealista, rendimenti immobiliari Q3 2024</a> · <a href="https://www.assoimmobiliare.it/inrev-lanalisi-delle-performance-dei-fondi-immobiliari-europei/" target="_blank">INREV / Assoimmobiliare, performance fondi europei</a></div>
+
+<p class="rv">Il sistema funziona perché l'Italia lo consente. L'edilizia residenziale pubblica italiana rappresenta il <b>3,7% del patrimonio abitativo</b>: una delle percentuali più basse d'Europa. La media europea è il 9%. I Paesi Bassi sono al 29%, l'Austria al 24%, la Francia al 17%, la Danimarca al 20%. L'Italia non ha una politica della casa. A Milano il patrimonio ERP scende (da 65.986 a 62.457 alloggi in sei anni) mentre le domande salgono (17.000 per 500 posti). La corruzione documentata dalla Procura è l'aggravante di un reato già in corso da decenni: l'abbandono della funzione pubblica nell'abitare. I fondi internazionali hanno riempito il vuoto lasciato dallo Stato. Il prezzo lo pagano i residenti.</p>
+<div class="src rv"><a href="https://www.oecd.org/content/dam/oecd/it/publications/reports/2023/10/housing-in-italy-through-the-telescope-and-the-microphone_111d5b6d/f76c3093-it.pdf" target="_blank">OCSE, "Housing in Italy", ott 2023</a> · <a href="https://www.nuoverigenerazioni.eu/tutte-le-news/1383-lo-stato-dell-edilizia-abitativa-in-europa" target="_blank">Housing Europe, "Lo stato dell'edilizia abitativa", 2023</a></div>
+
+<p class="rv">La rigenerazione urbana è avvenuta. Porta Nuova nel 2005 era un buco nero tra la Stazione Garibaldi e l'Isola: aree dismesse, sottopassi degradati. Lo Scalo di Porta Romana era un relitto ferroviario. L'area Expo era un cantiere abbandonato. Oggi sono quartieri funzionanti. La domanda che il sito pone non è se dovessero essere rigenerati. Dovevano. La domanda è chi ne ha tratto vantaggio e chi ne ha pagato il costo. La risposta è nei numeri che precedono: capitali globali, corruzione locale, assenza di politiche nazionali della casa hanno prodotto una redistribuzione massiccia di valore dai residenti agli investitori. I residenti pagano di più, possiedono di meno, decidono di meno. Gli investitori pagano di meno (oneri congelati per quindici anni, SCIA al posto di piani attuativi, commissioni compiacenti), possiedono di più, e quando l'indagine arriva, scrivono la legge per fermarla.</p>
+
+<h3 class="rv" style="font-family:var(--mono);font-size:.55rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin:3rem 0 1rem">Cronologia: dall'acquisto alla crisi</h3>
+<div class="tl rv">
+<div class="tl-i"><div class="tl-d">Febbraio 2015</div><div class="tl-t">QIA compra il 100% del Progetto Porta Nuova</div><div class="tl-p">Il fondo sovrano del Qatar acquisisce l'intero complesso immobiliare: ~20 edifici, 290.000 mq. Valore stimato: oltre 2 miliardi.</div></div>
+<div class="tl-i"><div class="tl-d">2007–2023</div><div class="tl-t">Oneri urbanistici congelati per 15 anni</div><div class="tl-p">Le tabelle non vengono aggiornate. I costruttori pagano tariffe del 2007 su cantieri del 2022.</div></div>
+<div class="tl-i"><div class="tl-d">Novembre 2022</div><div class="tl-t">Coima acquista lo Scalo di Porta Romana</div><div class="tl-p">Cordata con Covivio e Prada per 180 milioni. Unica offerta rimasta su sette iniziali.</div></div>
+<div class="tl-i"><div class="tl-d">Aprile 2023</div><div class="tl-t">La Procura apre l'indagine urbanistica</div><div class="tl-p">Primi sequestri e perquisizioni. Emergono le SCIA usate per nuove costruzioni.</div></div>
+<div class="tl-i"><div class="tl-d">Ottobre 2024</div><div class="tl-t">Cerri scrive il Salva Milano</div><div class="tl-p">Intercettazione: "L'ho fatto io, l'ho dato a Foti."</div></div>
+<div class="tl-i hot"><div class="tl-d">21 Novembre 2024</div><div class="tl-t">La Camera approva il Salva Milano</div><div class="tl-p">Il ddl scritto da indagati viene votato dal Parlamento.</div></div>
+<div class="tl-i hot"><div class="tl-d">5 Marzo 2025</div><div class="tl-t">Oggioni arrestato. Il Comune si sfila</div><div class="tl-p">Ex dirigente SUE in manette. La giunta Sala ritira il sostegno al Salva Milano.</div></div>
+<div class="tl-i hot"><div class="tl-d">16 Luglio 2025</div><div class="tl-t">La Procura chiede sei arresti</div><div class="tl-p">Tra gli obiettivi: Tancredi, Marinoni, Bezziccheri. Catella sarà arrestato il 31 luglio.</div></div>
+<div class="tl-i hot"><div class="tl-d">31 Luglio 2025</div><div class="tl-t">Catella e Tancredi ai domiciliari</div><div class="tl-p">Il CEO di Coima e l'ex assessore all'Urbanistica arrestati per corruzione e falso.</div></div>
+<div class="tl-i"><div class="tl-d">Ottobre 2025</div><div class="tl-t">36 verso il processo nel primo filone</div><div class="tl-p">La Procura chiude il primo fascicolo. 74 indagati complessivi su più filoni.</div></div>
+<div class="tl-i hot"><div class="tl-d">Dicembre 2025</div><div class="tl-t">Sequestrata la Torre Unico Brera</div><div class="tl-p">27 indagati. Monolocali venduti a 700.000 euro.</div></div>
+<div class="tl-i"><div class="tl-d">Dicembre 2025</div><div class="tl-t">Corte dei Conti: 10 istruttorie, 85 mln</div><div class="tl-p">Stima preliminare del danno erariale alle casse pubbliche.</div></div>
+<div class="tl-i hot"><div class="tl-d">Marzo 2026</div><div class="tl-t">Sequestrato il cantiere di via Papiniano</div><div class="tl-p">La Procura: dal 2024 non c'è buona fede. Le indagini proseguono.</div></div>
+</div>
+
+<div class="analysis rv">
+<h3>Le nove evidenze</h3>
+<p><b>1.</b> Rapporto canone/reddito al 76% per un lavoratore singolo. La soglia critica internazionale è il 30%. Milano è la prima città italiana per sofferenza abitativa (indice CDP/IFAL).</p>
+<p><b>2.</b> 50 miliardi di euro in asset immobiliari dei fondi su Milano in dieci anni, di cui 30 miliardi di capitali esteri. Il 55% degli investimenti immobiliari stranieri in Italia finisce qui.</p>
+<p><b>3.</b> 74 indagati, 36 verso il processo nel primo filone chiuso. Corte dei Conti: 10 istruttorie, 85 milioni di danno erariale stimato.</p>
+<p><b>4.</b> Nelle zone ad alta concentrazione di Airbnb, l'impatto sui canoni residenziali è tra il 5 e il 7% (Università Bicocca). Ai Navigli, dove il 12% delle unità è su piattaforme turistiche, i canoni sono saliti del 42%.</p>
+<p><b>5.</b> Il 93% degli studenti fuorisede compete con i residenti sul mercato privato: 35.500 persone in più nella domanda abitativa.</p>
+<p><b>6.</b> La forbice canoni/salari si è aperta del 61% in dieci anni. I canoni crescono, i salari scendono.</p>
+<p><b>7.</b> Gli oneri urbanistici sono rimasti fermi per 15 anni. L'aggiornamento ha quadruplicato gli incassi: il regalo era strutturale.</p>
+<p><b>8.</b> L'edilizia residenziale pubblica italiana è al 3,7% del patrimonio abitativo. La media europea è il 9%. I Paesi Bassi sono al 29%. L'Italia non ha una politica della casa. Il vuoto è stato riempito dai fondi.</p>
+<p><b>9.</b> Gli indagati hanno scritto la legge per neutralizzare l'indagine. L'hanno chiamata Salva Milano. Il GIP l'ha definita un tentativo di bloccare i pm.</p>
+</div>
+</div>
+
+<!-- FINDING -->
+<div class="finding sec" data-nav="Conclusione">
+<h2 class="rv">Chi ha comprato Milano?<br><em>Nessuno.</em></h2>
+<p class="sub rv">Milano è diventata un rendimento. 50 miliardi di asset, 2,75 miliardi estratti ogni anno dai canoni di chi ci vive. La corruzione ha abbassato il prezzo d'ingresso. L'assenza dello Stato ha garantito il rendimento. L'estratto conto è ancora aperto.</p>
+<p class="fs rv">OGNI CIFRA È VERIFICABILE · OGNI FONTE È PUBBLICA · OGNI LINK È CLICCABILE</p>
+</div>
+
+<!-- SHARE -->
+<div class="share-section">
+<p>Se pensi che questi dati debbano circolare, condividi.</p>
+<div class="share-btns">
+<a class="share-btn" href="https://wa.me/?text=Ho%20trovato%20questa%20inchiesta%20su%20Milano.%20Tutti%20i%20dati%20sono%20veri.%20Guardate%20i%20nomi.%20chihacompratomilano.it" target="_blank" rel="noopener">WhatsApp</a>
+<a class="share-btn" href="https://t.me/share/url?url=https://chihacompratomilano.it&text=Ho%20trovato%20questa%20inchiesta%20su%20Milano.%20Tutti%20i%20dati%20sono%20veri.%20Guardate%20i%20nomi." target="_blank" rel="noopener">Telegram</a>
+<a class="share-btn" href="https://twitter.com/intent/tweet?text=Ho%20trovato%20questa%20inchiesta%20su%20Milano.%20Tutti%20i%20dati%20sono%20veri.%20Guardate%20i%20nomi.&url=https://chihacompratomilano.it" target="_blank" rel="noopener">X / Twitter</a>
+<a class="share-btn" onclick="navigator.clipboard.writeText('Ho trovato questa inchiesta su Milano. Tutti i dati sono veri. Guardate i nomi. chihacompratomilano.it');this.textContent='Copiato!';setTimeout(()=>this.textContent='Copia link',2000);" style="cursor:pointer">Copia link</a>
+</div>
+</div>
+
+<!-- TELEGRAM GROUP -->
+<div class="tg-section">
+<p>Hai condiviso sapendo. Ora osserva cosa succede.</p>
+<a class="tg-btn" href="https://t.me/+PLACEHOLDER_INVITE_LINK" target="_blank" rel="noopener">Entra in "I complici di Milano" →</a>
+</div>
+
+<!-- COLOPHON -->
+<div class="colo">
+<p>CISUR · Centro Indipendente di Studi Urbani e Residenziali<br>Indagine #001 · Pubblicata marzo 2026<br>Fonti: atti giudiziari, bilanci societari, ISTAT, Ministero dell'Interno, comunicati stampa, cronaca giudiziaria<br>Per segnalazioni: cisur.ricerca@proton.me<br><br><a href="cisur.html">cisur.it · Chi siamo</a></p>
+</div>
+
+<script>
+// PROGRESS
+window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-innerHeight;document.getElementById('progress').style.width=(scrollY/h*100)+'%';});
+
+// NAV DOTS
+const secs=document.querySelectorAll('.sec[data-nav]'),nav=document.getElementById('dots');
+secs.forEach(s=>{const d=document.createElement('button');d.className='dot';d.dataset.t=s.dataset.nav;d.onclick=()=>s.scrollIntoView({behavior:'smooth'});nav.appendChild(d);});
+const ds=nav.querySelectorAll('.dot');
+const upNav=()=>{let c=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight/2)c=i;});ds.forEach((d,i)=>d.classList.toggle('on',i===c));};
+window.addEventListener('scroll',upNav);upNav();
+
+// REVEALS — observe all reveal types
+const obs=new IntersectionObserver(e=>e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('vis');}}),{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-blur').forEach(el=>obs.observe(el));
+
+// COUNTER ANIMATION for number blocks
+const counterObs=new IntersectionObserver(e=>e.forEach(el=>{
+if(el.isIntersecting&&!el.target.dataset.counted){
+el.target.dataset.counted='1';
+const vEl=el.target.querySelector('.v');
+if(!vEl)return;
+const raw=vEl.textContent;
+// Extract number and parts
+const match=raw.match(/^([−\-+]?)(\d[\d.,]*)(.*)/);
+if(!match)return;
+const prefix=match[1],numStr=match[2],suffix=match[3];
+const hasDot=numStr.includes(',')&&!numStr.includes('.');
+const cleanNum=parseFloat(numStr.replace(/\./g,'').replace(',','.'));
+if(isNaN(cleanNum))return;
+const duration=1200;const start=performance.now();
+const fmt=(n)=>{
+if(hasDot){const s=n.toFixed(1);return s.replace('.',',');}
+if(cleanNum>=1000){return Math.round(n).toLocaleString('it-IT');}
+return Math.round(n).toString();
+};
+function tick(now){
+const p=Math.min((now-start)/duration,1);
+const ease=1-Math.pow(1-p,3);
+const current=cleanNum*ease;
+// Preserve innerHTML structure (units in spans)
+const uSpan=vEl.querySelector('.u');
+const uHTML=uSpan?uSpan.outerHTML:'';
+vEl.innerHTML=prefix+fmt(current)+(uHTML||suffix);
+if(p<1)requestAnimationFrame(tick);
+else vEl.innerHTML=prefix+fmt(cleanNum)+(uHTML||suffix);
+}
+requestAnimationFrame(tick);
+}
+}),{threshold:.3});
+document.querySelectorAll('.nb').forEach(el=>counterObs.observe(el));
+
+// PARALLAX on photo blocks
+const parallaxEls=document.querySelectorAll('.pb img');
+function updateParallax(){
+parallaxEls.forEach(img=>{
+const rect=img.parentElement.getBoundingClientRect();
+if(rect.bottom<0||rect.top>innerHeight)return;
+const progress=(innerHeight-rect.top)/(innerHeight+rect.height);
+const offset=(progress-.5)*40;
+img.style.transform=`translateY(${offset}px)`;
+});
+}
+window.addEventListener('scroll',updateParallax,{passive:true});updateParallax();
+
+// TICKER
+const td=["<b>50 mld €</b> in asset fondi su Milano in 10 anni · <span class='r'>30 mld esteri</span>","Rendimento residenziale: <span class='r'>5,5%</span> annuo su masse da 50 mld","QIA: <b>100%</b> Progetto Porta Nuova · <span class='r'>>2 mld €</span>","Coima: <b>33 fondi</b>, masse <span class='r'>>10 mld €</span>","Hines: <b>6 mld</b> su Milano","Lendlease: <b>MIND 4 mld</b> + <b>Santa Giulia 2,7 mld</b>","Affitto medio: <span class='r'>23,4 €/mq</span> (era 14,7 nel 2015)","Richieste sfratto 2024: <span class='r'>14.084</span>","Indagati: <span class='r'>74</span> su più filoni","Oneri urbanistici: <b>15 anni</b> senza aggiornamento","Corte dei Conti: <span class='r'>10 istruttorie</span>, 85 mln danno erariale","ERP Italia: <span class='r'>3,7%</span> del patrimonio (media UE 9%)","Catella arrestato <b>31 lug 2025</b>","Corvetto: <span class='r'>da 3.700 a 4.500 €/mq</span>","Case popolari: <b>500</b> su <span class='r'>17.000 domande</span>","Airbnb: <b>18.800</b> · impatto canoni <span class='r'>+5/7%</span> (Bicocca)","Torre Unico Brera: <b>sequestrata</b> dic 2025, monolocali a 700k€","Salva Milano: scritto dagli indagati, <span class='r'>votato dal Parlamento</span>"];
+let th='';for(let i=0;i<2;i++)td.forEach(t=>th+=`<div class="ti">${t}</div>`);document.getElementById('tk').innerHTML=th;
+
+// CHARTS
+Chart.defaults.color='#999';Chart.defaults.font.family='"JetBrains Mono"';Chart.defaults.font.size=10;
+
+new Chart(document.getElementById('ch1'),{type:'line',data:{labels:['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'],datasets:[
+{label:'Canoni (2015=100)',data:[100,103,106,110,116,112,121,131,142,150,159],borderColor:'#c41e1e',backgroundColor:'rgba(196,30,30,.06)',fill:true,tension:.3,pointRadius:2,borderWidth:2},
+{label:'Salari reali (2015=100)',data:[100,100.5,100.2,100.1,100.3,98,97.5,96,97,98,98.5],borderColor:'#aaa',borderDash:[4,4],pointRadius:2,borderWidth:1.5,fill:false}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10,padding:15}}},scales:{x:{grid:{color:'#f0ede8'}},y:{grid:{color:'#f0ede8'}}}}});
+
+new Chart(document.getElementById('ch2'),{type:'bar',data:{labels:['Operaio 1.360€','Insegnante 1.450€','Impiegato 1.680€','Infermiere 1.550€','Quadro 2.800€','Dirigente 5.200€'],datasets:[{data:[19,21,25,23,42,78],backgroundColor:d=>d.index<3?'#c41e1e':d.index<5?'#b8941e':'#1a6b4a',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',layout:{padding:{left:15}},plugins:{legend:{display:false}},scales:{x:{grid:{color:'#f0ede8'},ticks:{callback:v=>v+' mq'}},y:{grid:{display:false},ticks:{font:{size:11},padding:8}}}}});
+
+// CHART: CONFRONTO CITTÀ ITALIANE (stessa metrica CDP/IFAL: lavoratore singolo, canone medio)
+new Chart(document.getElementById('ch-eu'),{type:'bar',data:{labels:['Milano','Bolzano','Roma','Firenze','Napoli','Bologna','Torino','Soglia critica'],datasets:[{label:'% reddito in affitto',data:[76,62,58,55,48,46,38,30],backgroundColor:d=>d.index===0?'#c41e1e':d.index===7?'rgba(26,107,74,.3)':'#ddd8d0',borderRadius:2,borderColor:d=>d.index===7?'#1a6b4a':'transparent',borderWidth:d=>d.index===7?2:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#f0ede8'},ticks:{callback:v=>v+'%'},max:85}}}});
+
+// MILAN MAP — radial cartogram
+(function(){
+const mc=document.getElementById('milan-map'),mx=mc.getContext('2d');
+const tip=document.getElementById('map-tip');
+const container=mc.closest('.map-container');
+const CX=350,CY=350; // center
+const zones=[
+// Centro (ring 0)
+{name:'Duomo / Centro',price:'10.200 €/mq',income:'94.400 €',ring:0,angle:0,span:360,color:'#6b1010'},
+// Ring 1 — semicentro
+{name:'Brera',price:'8.800 €/mq',income:'65.000 €',ring:1,angle:300,span:60,color:'#8b1a1a'},
+{name:'Porta Nuova',price:'7.500 €/mq',income:'52.000 €',ring:1,angle:0,span:60,color:'#8b1a1a'},
+{name:'Porta Romana',price:'5.800 €/mq',income:'45.000 €',ring:1,angle:120,span:60,color:'#c41e1e'},
+{name:'Sempione',price:'5.500 €/mq',income:'40.000 €',ring:1,angle:240,span:60,color:'#e8a838'},
+{name:'Isola',price:'5.200 €/mq',income:'38.000 €',ring:1,angle:30,span:30,color:'#e8a838'},
+{name:'Navigli',price:'5.000 €/mq',income:'35.000 €',ring:1,angle:180,span:60,color:'#e8a838'},
+{name:'Città Studi',price:'4.200 €/mq',income:'32.000 €',ring:1,angle:60,span:60,color:'#e8a838'},
+// Ring 2 — semicentro-periferia
+{name:'San Siro',price:'3.500 €/mq',income:'28.000 €',ring:2,angle:240,span:50,color:'#d4a574'},
+{name:'Lambrate',price:'3.400 €/mq',income:'29.000 €',ring:2,angle:60,span:50,color:'#d4a574'},
+{name:'Corvetto',price:'4.500 €/mq',income:'25.000 €',ring:2,angle:130,span:50,color:'#e8a838'},
+{name:'Niguarda',price:'3.000 €/mq',income:'27.000 €',ring:2,angle:350,span:40,color:'#d4a574'},
+{name:'Barona',price:'2.800 €/mq',income:'22.500 €',ring:2,angle:190,span:45,color:'#d4a574'},
+// Ring 3 — periferia
+{name:'Baggio',price:'2.400 €/mq',income:'23.000 €',ring:3,angle:220,span:55,color:'#e8dcc8'},
+{name:'Giambellino',price:'2.600 €/mq',income:'21.000 €',ring:3,angle:190,span:35,color:'#e8dcc8'},
+{name:'Quarto Oggiaro',price:'2.100 €/mq',income:'18.500 €',ring:3,angle:310,span:50,color:'#e8dcc8'},
+];
+const radii=[0,65,140,215,280];
+function toRad(d){return(d-90)*Math.PI/180;}
+function drawZone(z,highlight){
+const r0=radii[z.ring],r1=radii[z.ring+1];
+const a0=toRad(z.angle),a1=toRad(z.angle+z.span);
+mx.beginPath();
+if(z.ring===0){mx.arc(CX,CY,r1,0,Math.PI*2);}
+else{mx.arc(CX,CY,r1,a0,a1);mx.arc(CX,CY,r0,a1,a0,true);}
+mx.closePath();
+mx.fillStyle=highlight?z.color:z.color+(highlight===false?'55':'');
+mx.fill();
+mx.strokeStyle='rgba(255,255,255,.25)';mx.lineWidth=1.5;mx.stroke();
+// Label
+mx.save();
+const mr=(r0+r1)/2;
+const ma=(z.angle+z.span/2);
+const mar=toRad(ma);
+const lx=z.ring===0?CX:CX+Math.cos(mar)*mr;
+const ly=z.ring===0?CY:CY+Math.sin(mar)*mr;
+const fs=z.ring===0?11:z.ring===1?8.5:z.ring===2?7.5:7;
+mx.font=`600 ${fs}px "JetBrains Mono"`;mx.fillStyle=z.ring<2?'#fff':'rgba(0,0,0,.6)';
+mx.textAlign='center';mx.textBaseline='middle';
+const words=z.name.split(/[\s\/]+/);
+words.forEach((w,i)=>{mx.fillText(w,lx,ly+(i-(words.length-1)/2)*(fs+2));});
+mx.restore();
+}
+let hovered=-1;
+function drawMap(){
+mx.clearRect(0,0,700,700);
+// Draw all zones
+zones.forEach((z,i)=>{drawZone(z,hovered===-1?undefined:i===hovered);});
+// Dim non-hovered
+if(hovered!==-1){
+zones.forEach((z,i)=>{if(i!==hovered)drawZone(z,false);});
+drawZone(zones[hovered],true);
+}
+}
+drawMap();
+function getZone(ex,ey){
+const rect=mc.getBoundingClientRect();
+const sx=700/rect.width;
+const px=(ex-rect.left)*sx,py=(ey-rect.top)*sx;
+const dx=px-CX,dy=py-CY,dist=Math.sqrt(dx*dx+dy*dy);
+let ang=Math.atan2(dy,dx)*180/Math.PI+90;if(ang<0)ang+=360;
+for(let i=zones.length-1;i>=0;i--){
+const z=zones[i];
+const r0=radii[z.ring],r1=radii[z.ring+1];
+if(dist<r0||dist>r1)continue;
+if(z.ring===0)return i;
+let a0=z.angle,a1=z.angle+z.span;
+if(a1>360){if(ang>=a0||ang<=a1-360)return i;}
+else{if(ang>=a0&&ang<=a1)return i;}
+}
+return -1;
+}
+mc.addEventListener('mousemove',e=>{
+const idx=getZone(e.clientX,e.clientY);
+if(idx!==hovered){hovered=idx;drawMap();}
+if(idx!==-1){
+const z=zones[idx];
+tip.innerHTML=`<div class="tt-name">${z.name}</div><div class="tt-price">${z.price}</div><div>Reddito medio: ${z.income}</div>`;
+tip.style.opacity='1';
+const rect=container.getBoundingClientRect();
+tip.style.left=(e.clientX-rect.left+15)+'px';
+tip.style.top=(e.clientY-rect.top-10)+'px';
+}else{tip.style.opacity='0';}
+});
+mc.addEventListener('mouseleave',()=>{hovered=-1;drawMap();tip.style.opacity='0';});
+})();
+
+// NETWORK — interactive
+(function(){
+const nc=document.getElementById('net'),cx=nc.getContext('2d');
+const rz=()=>{nc.width=nc.parentElement.clientWidth;nc.height=nc.parentElement.clientHeight;};rz();
+// Nodi: 0-QIA 1-Coima/Catella 2-Hines 3-Blackstone 4-Kryalos/Bottelli 5-Sala 6-Tancredi
+// 7-Marinoni 8-Boeri 9-Scandurra 10-Malangone 11-Prada 12-Covivio 13-Lendlease
+// 14-Ardian 15-Generali 16-Bezziccheri/Bluestone 17-Oggioni 18-Pella/J+S
+// 19-Cerri 20-Castello SGR/Schiavo 21-De Cesaris
+const N=[
+{id:'QIA',role:'Fondo sovrano Qatar · $557 mld',x:.08,y:.15,r:18,c:'#c41e1e'},
+{id:'Coima/Catella',role:'SGR · >10 mld · Arrestato lug 2025',x:.3,y:.12,r:20,c:'#c41e1e'},
+{id:'Hines',role:'Sviluppatore USA · 8 mld su MI',x:.55,y:.08,r:13,c:'#b8941e'},
+{id:'Blackstone',role:'Private equity USA · 35% Kryalos',x:.75,y:.12,r:12,c:'#1b4f8a'},
+{id:'Kryalos/Bottelli',role:'SGR · 14 mld masse · Indagato',x:.82,y:.3,r:11,c:'#1b4f8a'},
+{id:'Sala',role:'Sindaco · Indagato · Induz. indebita',x:.25,y:.4,r:15,c:'#c41e1e'},
+{id:'Tancredi',role:'Ex assessore Urbanistica · Arrestato',x:.42,y:.35,r:13,c:'#c41e1e'},
+{id:'Marinoni',role:'Pres. Comm. Paesaggio · "Fulcro corruzione" · 400k€ parcelle',x:.52,y:.52,r:13,c:'#c41e1e'},
+{id:'Boeri',role:'Architetto · Indagato · Chat con Sala e Catella',x:.32,y:.58,r:12,c:'#b8941e'},
+{id:'Scandurra',role:'Ex Comm. Paesaggio · Arrestato · Parcelle Coima+Castello+Bluestone',x:.62,y:.62,r:11,c:'#c41e1e'},
+{id:'Malangone',role:'DG Comune · Indagato · Turbativa d\'asta',x:.15,y:.55,r:10,c:'#c41e1e'},
+{id:'Prada',role:'Cordata Scalo Romana · 180 mln',x:.08,y:.78,r:11,c:'#b8941e'},
+{id:'Covivio',role:'88% portafoglio su MI · 2,6 mld',x:.72,y:.52,r:11,c:'#1b4f8a'},
+{id:'Lendlease',role:'MIND 4 mld + Santa Giulia 2,7 mld',x:.9,y:.42,r:11,c:'#b8941e'},
+{id:'Ardian',role:'PE · 2.000 posti studentati Italia',x:.92,y:.62,r:10,c:'#1b4f8a'},
+{id:'Generali',role:'RE · ~7 mld patrimonio MI',x:.05,y:.38,r:10,c:'#999'},
+{id:'Bezziccheri',role:'Bluestone · In carcere · 5 episodi corruzione · 6,5 mln da Jersey',x:.68,y:.28,r:10,c:'#c41e1e'},
+{id:'Oggioni',role:'Ex dir. SUE + vicepres. Comm. · Arrestato mar 2025 · Co-autore Salva Milano',x:.42,y:.78,r:10,c:'#c41e1e'},
+{id:'Pella/J+S',role:'Architetto · Arrestato · 370k€ a Marinoni · Patto corruttivo San Siro',x:.6,y:.42,r:9,c:'#c41e1e'},
+{id:'Cerri',role:'Architetto · Interdetto 1 anno · Co-autore Salva Milano · Pressioni su Foti, Lupi, Morelli',x:.52,y:.88,r:9,c:'#c41e1e'},
+{id:'Castello/Schiavo',role:'SGR · 321k€ fatture a Scandurra · Indagato',x:.78,y:.72,r:9,c:'#1b4f8a'},
+{id:'De Cesaris',role:'Ex vicesindaca · Indagata · Info riservate a Cerri',x:.22,y:.72,r:9,c:'#c41e1e'}
+];
+// Connessioni documentate da atti giudiziari, chat sequestrate, bilanci societari
+const E=[
+[0,1],   // QIA → Coima (100% Porta Nuova)
+[1,2],   // Coima ↔ Hines (operazioni congiunte)
+[1,5],   // Catella → Sala (chat "sbloccateci")
+[1,6],   // Catella ↔ Tancredi (chat tariffe studentato)
+[1,7],   // Catella → Marinoni (Fondazione Catella 2019)
+[1,8],   // Catella ↔ Boeri (chat, progetto Pirellino)
+[1,9],   // Coima → Scandurra (parcella 28.548€)
+[1,12],  // Coima ↔ Covivio (cordata Scalo Romana)
+[1,11],  // Coima ↔ Prada (cordata Scalo Romana)
+[5,6],   // Sala ↔ Tancredi (rapporto istituzionale + chat)
+[5,8],   // Sala ↔ Boeri (anni di chat, pressioni su progetti, San Siro)
+[5,10],  // Sala ↔ Malangone (DG Comune, induzione indebita)
+[6,7],   // Tancredi ↔ Marinoni (mediazione per approvazioni)
+[6,9],   // Tancredi ↔ Scandurra
+[6,10],  // Tancredi ↔ Malangone
+[7,8],   // Marinoni ↔ Boeri ("appoggia totalmente")
+[7,9],   // Marinoni ↔ Scandurra (Comm. Paesaggio)
+[7,18],  // Marinoni ↔ Pella (370k€ parcelle J+S, patto corruttivo)
+[2,3],   // Hines ↔ Blackstone
+[3,4],   // Blackstone → Kryalos (35%)
+[12,13], // Covivio ↔ Lendlease (Santa Giulia)
+[14,12], // Ardian ↔ Covivio
+[16,9],  // Bezziccheri → Scandurra (5 episodi corruzione)
+[16,4],  // Bezziccheri ↔ Kryalos
+[17,7],  // Oggioni ↔ Marinoni (ufficio parallelo)
+[17,6],  // Oggioni ↔ Tancredi
+[17,19], // Oggioni ↔ Cerri (co-autori Salva Milano)
+[17,8],  // Oggioni ↔ Boeri (chat agli atti)
+[19,21], // Cerri ↔ De Cesaris (info riservate)
+[20,9],  // Castello/Schiavo → Scandurra (321k€ fatture)
+[8,17],  // Boeri ↔ Oggioni
+[21,5],  // De Cesaris ↔ Sala (ex vicesindaca)
+[11,12], // Prada ↔ Covivio (cordata)
+[15,1],  // Generali ↔ Coima
+[18,7],  // Pella ↔ Marinoni (duplicato per sicurezza disegno)
+];
+let hovN=-1;
+const ntip=document.createElement('div');
+ntip.style.cssText='position:absolute;background:#1a1a1a;color:#fff;font-family:"JetBrains Mono",monospace;font-size:.6rem;padding:.6rem 1rem;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10;max-width:200px;line-height:1.6;border:1px solid rgba(255,255,255,.1)';
+nc.parentElement.appendChild(ntip);
+function dn(){
+cx.clearRect(0,0,nc.width,nc.height);const W=nc.width,H=nc.height,t=Date.now()*.0004;
+// Edges
+E.forEach(([a,b])=>{
+const active=hovN===-1||a===hovN||b===hovN;
+cx.beginPath();
+const ax=N[a].x*W+Math.sin(t+a*1.5)*3,ay=N[a].y*H+Math.cos(t+a*.9)*2;
+const bx=N[b].x*W+Math.sin(t+b*1.5)*3,by=N[b].y*H+Math.cos(t+b*.9)*2;
+cx.moveTo(ax,ay);cx.lineTo(bx,by);
+cx.strokeStyle=active?(hovN!==-1?'rgba(196,30,30,.4)':'rgba(255,255,255,.06)'):'rgba(255,255,255,.02)';
+cx.lineWidth=active&&hovN!==-1?2:1;cx.stroke();
+});
+// Nodes
+N.forEach((n,i)=>{
+const x=n.x*W+Math.sin(t+i*1.5)*3,y=n.y*H+Math.cos(t+i*.9)*2;
+const active=hovN===-1||i===hovN||E.some(([a,b])=>(a===hovN&&b===i)||(b===hovN&&a===i));
+const alpha=active?1:.15;
+// Glow
+cx.beginPath();cx.arc(x,y,n.r*1.2,0,Math.PI*2);
+cx.fillStyle=n.c+(active?'18':'08');cx.fill();
+// Outer
+cx.beginPath();cx.arc(x,y,n.r,0,Math.PI*2);
+cx.fillStyle=n.c+(active?'35':'12');cx.fill();
+// Core
+cx.beginPath();cx.arc(x,y,n.r*.45,0,Math.PI*2);
+cx.fillStyle=active?n.c:n.c+'40';cx.fill();
+// Ring on hover
+if(i===hovN){cx.beginPath();cx.arc(x,y,n.r+3,0,Math.PI*2);cx.strokeStyle=n.c;cx.lineWidth=1.5;cx.stroke();}
+// Label
+cx.font=`${active?'600':'400'} ${i===hovN?10:8}px "JetBrains Mono"`;
+cx.fillStyle=`rgba(255,255,255,${active?.75:.2})`;
+cx.textAlign='center';cx.fillText(n.id,x,y+n.r+12);
+});
+requestAnimationFrame(dn);}dn();
+nc.addEventListener('mousemove',e=>{
+const rect=nc.getBoundingClientRect();
+const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+const W=nc.width,H=nc.height,t=Date.now()*.0004;
+const sx=W/rect.width,sy=H/rect.height;
+let found=-1;
+N.forEach((n,i)=>{
+const x=n.x*W+Math.sin(t+i*1.5)*3,y=n.y*H+Math.cos(t+i*.9)*2;
+const dx=mx*sx-x,dy=my*sy-y;
+if(Math.sqrt(dx*dx+dy*dy)<n.r+8)found=i;
+});
+hovN=found;
+nc.style.cursor=found!==-1?'pointer':'crosshair';
+if(found!==-1){
+const n=N[found];
+ntip.innerHTML=`<div style="font-weight:700;font-size:.7rem;margin-bottom:.2rem;color:${n.c}">${n.id}</div><div style="color:rgba(255,255,255,.6)">${n.role}</div>`;
+ntip.style.opacity='1';
+const pr=nc.parentElement.getBoundingClientRect();
+ntip.style.left=(e.clientX-pr.left+15)+'px';
+ntip.style.top=(e.clientY-pr.top-10)+'px';
+}else{ntip.style.opacity='0';}
+});
+nc.addEventListener('mouseleave',()=>{hovN=-1;ntip.style.opacity='0';});
+window.addEventListener('resize',rz);
+})();
+</script>
+</body>
+</html>
