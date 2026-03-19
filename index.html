@@ -232,7 +232,72 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 .colo p{font-family:var(--mono);font-size:.5rem;color:var(--light);letter-spacing:.1em;line-height:2.2}
 .colo a{color:var(--dim);font-size:inherit}
 
-@media(max-width:640px){.hero-pip{font-size:.38rem;letter-spacing:.15em;padding:.3rem .6rem;gap:.4rem}.hero-pip::before{width:5px;height:5px}.hero-sub{color:rgba(255,255,255,.62);font-size:.82rem}.hero-stats{gap:1.2rem}.nums{grid-template-columns:repeat(2,1fr)}.cycle{grid-template-columns:1fr}#dots{display:none}.hero h1{font-size:2.8rem}.share-btns{flex-direction:column;align-items:center}}
+@media(max-width:640px){
+/* HERO */
+.hero-pip{font-size:.38rem;letter-spacing:.15em;padding:.3rem .6rem;gap:.4rem}
+.hero-pip::before{width:5px;height:5px}
+.hero h1{font-size:2.8rem}
+.hero-thesis{font-size:1rem}
+.hero-sub{color:rgba(255,255,255,.62);font-size:.82rem;margin-bottom:2rem}
+.hero-c{padding:1.5rem}
+.hero-stats{gap:.8rem 1.2rem;padding-top:1.5rem}
+.hs .n{font-size:1.2rem}
+.hs .l{font-size:.42rem;letter-spacing:.05em}
+/* NAV DOTS hidden */
+#dots{display:none}
+/* SECTIONS general */
+.sl{font-size:.48rem;letter-spacing:.3em;margin-top:5rem}
+.src{font-size:.48rem;line-height:2}
+/* NUMBERS */
+.nums{grid-template-columns:repeat(2,1fr)}
+.nb{padding:1.2rem .8rem}
+/* CYCLE — vertical on mobile */
+.cycle{grid-template-columns:1fr}
+.cy:not(:last-child)::after{content:'↓';right:auto;left:50%;top:auto;bottom:-.6rem;transform:translateX(-50%)}
+/* ACTORS */
+.ah{padding:1rem 1.2rem}
+.an{font-size:1rem}
+.abox{padding:0 1.2rem}
+.actor.open .abox{padding-bottom:1.2rem}
+/* EVIDENCE */
+.ev{padding:1.4rem 1.2rem}
+.evq{font-size:.72rem}
+/* ANALYSIS */
+.analysis{padding:1.8rem 1.2rem}
+.analysis .big{font-size:clamp(1.3rem,5vw,2rem)}
+.analysis .big::before,.analysis .big::after{display:none}
+/* THESIS */
+.thesis{padding:1.8rem 1.2rem 1.8rem 1.8rem}
+/* TIMELINE */
+.tl{padding:1.5rem 0 1.5rem 2rem}
+.tl-d{font-size:.5rem}
+.tl-t{font-size:.88rem}
+.tl-p{font-size:.78rem}
+/* PHOTOS */
+.pb{height:45vh;min-height:280px}
+.pb .cap{padding:1.2rem}
+.pb .cap p{font-size:.76rem}
+/* NETWORK + MAP touch-friendly */
+.nw{height:350px}
+.nw-l{display:none}
+.map-container{padding:1.2rem}
+.map-legend{gap:.8rem}
+.map-legend span{font-size:.44rem}
+/* CHARTS */
+.cw{padding:1.2rem}
+.cw .ct{font-size:.48rem}
+/* GUIDE */
+.guide{padding:2.5rem 1.2rem}
+.guide p{font-size:1rem}
+/* FINDING */
+.finding .sub{font-size:1rem}
+/* SHARE */
+.share-btns{flex-direction:column;align-items:center}
+.share-btn{width:100%;text-align:center}
+.tg-btn{width:100%;text-align:center}
+/* COLOPHON */
+.colo p{font-size:.44rem}
+}
 </style>
 </head>
 <body>
@@ -247,31 +312,31 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <div class="hero-pip rv">Un'indagine <strong>CISUR</strong> &bull; Marzo 2026</div>
 <h1 class="rv d1">Chi ha <em>comprato</em> Milano</h1>
 <p class="hero-thesis rv d2">Nomi, fondi, cantieri, chat agli atti. La mappa di chi possiede Milano e di chi l'ha persa.</p>
-<p class="hero-sub rv d3">Il CISUR è il Centro Indipendente di Studi Urbani e Residenziali. Ogni cifra ha un link. Ogni fonte è pubblica. Tempo di lettura: 25 minuti.</p>
+<p class="hero-sub rv d3">Centro Indipendente di Studi Urbani e Residenziali. Ogni cifra ha un link. Ogni fonte è pubblica. Tempo di lettura: 25 minuti.</p>
 <div class="hero-stats rv">
 <div class="hs"><div class="n">50<span class="u">mld</span></div><div class="l">Asset fondi su Milano</div></div>
-<div class="hs"><div class="n">76<span class="u">%</span></div><div class="l">Stipendio in affitto</div></div>
+<div class="hs"><div class="n">76<span class="u">%</span></div><div class="l">Stipendio in affitto (singolo)</div></div>
 <div class="hs"><div class="n">14.084</div><div class="l">Richieste sfratto 2024</div></div>
 <div class="hs"><div class="n">74</div><div class="l">Indagati</div></div>
 <div class="hs"><div class="n">3,7<span class="u">%</span></div><div class="l">ERP Italia (media UE 9%)</div></div>
 </div>
 </div>
-<div class="sa">↓ Scorri per leggere</div>
+<div class="sa">↓ Scorri. Sono tutti dati pubblici.</div>
 </section>
 
 <!-- TICKER -->
 <div class="ticker"><div class="ticker-t" id="tk"></div></div>
 
 <!-- GUIDE 1 -->
-<div class="guide rv"><p>Questa indagine procede in dodici sezioni. Ogni numero ha una fonte. Segui il filo: porta ai nomi.</p></div>
+<div class="guide rv"><p>Ogni cifra ha un link. Ogni link porta a una fonte pubblica. Segui il filo: alla fine ci sono dei nomi.</p></div>
 
 <!-- ===== I. IL PREZZO ===== -->
 <div class="w sec" data-nav="Il prezzo">
 <div class="sl rv">Sezione I</div>
 <h2 class="rv">Il <em>prezzo</em> di Milano</h2>
 
-<p class="rv">Un operaio che lavora a Milano, con il suo stipendio, può comprare <b>19 metri quadri</b>. Un insegnante, 21. Un infermiere, 23. Per comprare un bilocale di 60 mq in semicentro servono 141 mensilità nette: quasi 12 anni senza mangiare, senza vestirsi, senza pagare una bolletta. Intanto l'affitto: bilocale in semicentro, 1.350 euro al mese. Stipendio netto medio di un lavoratore singolo: 1.820 euro. Il <b>76% del reddito</b> se ne va nel canone. Il calcolo è semplice: 1.350 diviso 1.820. L'Indice di Accessibilità Abitativa (HAI) della Cassa Depositi e Prestiti conferma il dato e colloca Milano in testa alla classifica nazionale, seguita da Bolzano e Roma. La soglia critica internazionale è il 30%: oltre quel limite una famiglia entra in area di sofferenza economica. Milano è a due volte e mezzo quella soglia. In media, in Italia l'affitto pesa per il 35% delle retribuzioni nette: già sopra il limite. A Milano il doppio della media nazionale.</p>
-<div class="src rv"><a href="https://www.pmi.it/economia/mercati/484035/affitti-il-conto-sale-a-milano-fino-al-76-dello-stipendio-ecco-la-mappa-nazionale.html" target="_blank">PMI.it, "Affitti: a Milano fino al 76% dello stipendio"</a> · <a href="https://www.milanofinanza.it/news/caro-affitti-stipendi-sotto-pressione-nelle-grandi-citta-la-casa-divora-il-reddito-dei-lavoratori-202512171437274464" target="_blank">MilanoFinanza, dic 2025</a> · <a href="https://www.cdp.it" target="_blank">CDP, Rapporto sulla casa e indice IFAL</a></div>
+<p class="rv">Un operaio che lavora a Milano, con il suo stipendio, può comprare <b>19 metri quadri</b>. Un insegnante, 21. Un infermiere, 23. Per comprare un bilocale di 60 mq in semicentro servono 141 mensilità nette: quasi 12 anni senza mangiare, senza vestirsi, senza pagare una bolletta. Intanto l'affitto: bilocale in semicentro, 1.350 euro al mese. Stipendio netto medio di un lavoratore singolo: 1.820 euro. Il <b>76% del reddito</b> se ne va nel canone. Il calcolo è semplice: 1.350 diviso 1.820. Il dato riguarda lo scenario-tipo del lavoratore singolo che affitta un bilocale da solo: è la condizione di chi non ha un secondo reddito in casa, non la media statistica. Per una coppia con due stipendi medi il rapporto scende intorno al 38-40%, comunque sopra la soglia critica. L'Indice di Accessibilità Abitativa (HAI) della Cassa Depositi e Prestiti conferma la tendenza e colloca Milano in testa alla classifica nazionale, seguita da Bolzano e Roma. La soglia critica internazionale è il 30%: oltre quel limite una famiglia entra in area di sofferenza economica. Anche nel caso della coppia, Milano la supera. Nel caso del singolo, è a due volte e mezzo quella soglia. In media, in Italia l'affitto pesa per il 35% delle retribuzioni nette: già sopra il limite. A Milano il doppio della media nazionale.</p>
+<div class="src rv"><a href="https://www.pmi.it/economia/mercati/484035/affitti-il-conto-sale-a-milano-fino-al-76-dello-stipendio-ecco-la-mappa-nazionale.html" target="_blank">PMI.it, "Affitti: a Milano fino al 76% dello stipendio"</a> · <a href="https://www.milanofinanza.it/news/caro-affitti-stipendi-sotto-pressione-nelle-grandi-citta-la-casa-divora-il-reddito-dei-lavoratori-202512171437274464" target="_blank">MilanoFinanza, dic 2025</a> · <a href="https://www.cdp.it/sitointernet/page/it/brief_per_la_mobilita_lavorativa_e_necessario_un_nuovo_abitare_sociale?contentId=CSA52988" target="_blank">CDP, Brief "Per la mobilità lavorativa è necessario un nuovo abitare sociale"</a></div>
 
 <p class="rv">Nel 2015, un metro quadro in affitto costava 14,7 euro al mese. Oggi ne costa 23,4: <strong>+59% in dieci anni</strong>. Nello stesso periodo, i salari reali italiani sono scesi dell'1,5%. I canoni salgono. Gli stipendi scendono. In mezzo: le persone che a Milano ci vivono.</p>
 <div class="src rv"><a href="https://www.immobiliare.it/mercato-immobiliare/" target="_blank">Immobiliare.it</a> · <a href="https://www.oecd.org/en/data/indicators/average-wages.html" target="_blank">OECD, Average Wages Italy</a></div>
@@ -374,17 +439,17 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 </div>
 
 <!-- PHOTO -->
-<div class="pb rv-blur"><img src="portanuova.jpg" alt="Piazza Gae Aulenti, Porta Nuova, Milano" loading="lazy"><div class="cap"><p><b>Piazza Gae Aulenti, Porta Nuova.</b> Il progetto immobiliare simbolo della nuova Milano: una ventina di edifici, 290.000 mq, Torre Unicredit, Bosco Verticale. 100% del Qatar Investment Authority dal 2015. Una piazza privata ad uso pubblico.</p></div></div>
+<div class="pb rv-blur"><img src="portanuova.jpg" alt="Piazza Gae Aulenti, Porta Nuova, Milano" loading="lazy"><div class="cap"><p><b>Piazza Gae Aulenti, Porta Nuova.</b> Venti edifici, 290.000 mq, Torre Unicredit, Bosco Verticale. Proprietà al 100% del Qatar Investment Authority dal 2015. I milanesi ci passeggiano. Il Qatar incassa.</p></div></div>
 
 <!-- GUIDE -->
-<div class="guide rv"><p>Questi attori operano attraverso rapporti documentati con l'amministrazione. Le chat sono agli atti della Procura.</p></div>
+<div class="guide rv"><p>Adesso apri le chat. Sono quelle sequestrate dalla Guardia di Finanza. Sono agli atti.</p></div>
 
 <!-- ===== III. LE PROVE ===== -->
 <div class="w sec" data-nav="Le prove">
 <div class="sl rv">Sezione III</div>
 <h2 class="rv">La porta <em>girevole</em></h2>
 
-<p class="rv">Le chat che seguono sono state sequestrate dalla Guardia di Finanza e depositate agli atti dell'inchiesta. Sono pubbliche, riportate dalla stampa con indicazione della fonte giudiziaria. Vanno lette nell'ordine: raccontano un sistema.</p>
+<p class="rv">Quello che segue viene dai telefoni. Sequestrati dalla Guardia di Finanza, depositati agli atti, pubblicati dalla stampa. Leggili nell'ordine. Non sono frasi isolate. Sono un sistema.</p>
 
 <div class="ev rv" data-l="Chat agli atti"><div class="evt">Catella → Sala</div><div class="evq">"Dai ragazzi adesso <em>sbloccateci</em> su questi progetti plz caffè quando vuoi"</div><div class="evs"><a href="https://www.ilgiorno.it/milano/cronaca/urbanistica-decisioni-gip-arresti-ls01220l" target="_blank">Atti Procura Milano · Il Giorno, 31 lug 2025</a></div></div>
 
@@ -422,7 +487,7 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 
 <div class="ev rv" data-l="Intercettazione agli atti"><div class="evt">Cerri, telefonata del 24 ottobre 2024</div><div class="evq">"<em>L'ho fatto io, l'ho dato a Foti.</em> La prima bozza mi arriva da Lupi."</div><div class="evs"><a href="https://www.ilfattoquotidiano.it/2025/03/05/speculazione-edilizia-lindagato-rivendicava-di-aver-scritto-il-salva-milano-lho-fatto-io-lho-dato-a-foti-la-prima-bozza-mi-arriva-da-lupi/7901044/" target="_blank">Il Fatto Quotidiano, 5 mar 2025</a></div></div>
 
-<p class="rv">Il GIP di Milano Mattia Fiorentini scrive nell'ordinanza: è evidente il <b>"palese coinvolgimento degli indagati nella Salva Milano"</b>, e Cerri ne è stato <b>"protagonista per bloccare le indagini dei pm"</b>. Il 5 marzo 2025, lo stesso giorno dell'arresto di Oggioni, il Comune di Milano annuncia che non sosterrà più il provvedimento. La giunta Sala si sfila. Si costituisce parte civile. Il ddl resta impantanato al Senato, dove Fratelli d'Italia e Lega temporeggiavano già prima. A luglio 2025, l'ANSA titola: "Salva Milano impantanato al Senato, ora rischia decadenza". La legge che doveva salvare i cantieri non salva nessuno, perché quei cantieri erano il problema.</p>
+<p class="rv">Il GIP di Milano Mattia Fiorentini lo scrive nell'ordinanza: è evidente il <b>"palese coinvolgimento degli indagati nella Salva Milano"</b>. Cerri ne è stato <b>"protagonista per bloccare le indagini dei pm"</b>. Il 5 marzo 2025, stesso giorno dell'arresto di Oggioni, il Comune annuncia che non sosterrà più il provvedimento. La giunta Sala si sfila. Si costituisce parte civile. Il ddl si impantana al Senato. A luglio 2025, l'ANSA titola: "Salva Milano, ora rischia decadenza". La legge che doveva salvare i cantieri non ha salvato nessuno. Perché quei cantieri erano il problema.</p>
 <div class="src rv"><a href="https://www.fanpage.it/milano/inchiesta-urbanistica-il-gip-marco-cerri-e-stato-protagonista-della-salva-milano-per-bloccare-le-indagini/" target="_blank">Fanpage, ordinanza GIP su Cerri</a> · <a href="https://www.ilpost.it/2025/03/06/milano-non-sostiene-legge-salva-milano-urbanistica/" target="_blank">Il Post, "Milano non sostiene più il Salva Milano"</a> · <a href="https://www.ansa.it/sito/notizie/politica/2025/07/17/a-che-punto-e-il-decreto-salva-milano-impantanato-al-senato-ora-rischia-decadenza_5c3651cb-08b8-4de2-b346-521da3333276.html" target="_blank">ANSA, 17 lug 2025</a></div>
 
 <div class="thesis rv">
@@ -506,7 +571,7 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <h3>Il triangolo: studenti, Airbnb, sfratti</h3>
 <span class="big">35.500 studenti nel mercato privato</span>
 <p>50.000 fuorisede meno 14.500 posti in residenza: il resto compete con i residenti per gli stessi appartamenti.</p>
-<p>Accanto a loro: <b>18.800 Airbnb</b> che sottraggono unità al mercato residenziale. L'Università di Milano-Bicocca ha misurato l'effetto: nelle zone ad alta concentrazione di affitti brevi, l'impatto sui canoni residenziali è tra il <b>5 e il 7%</b>. Significa che ogni nuovo Airbnb spinge in alto l'affitto del vicino di casa. L'effetto non è teorico: ai Navigli, dove il 12% delle unità abitative è su piattaforme turistiche, i canoni di lungo periodo sono saliti del 42%. Le 14.084 richieste di sfratto depositate nel 2024 sono il risultato di questa pressione combinata: studenti nel mercato privato, affitti brevi che alzano i prezzi, famiglie che non reggono.</p>
+<p>Accanto a loro: <b>18.800 Airbnb</b> che sottraggono unità al mercato residenziale. Secondo una ricerca dell'Università di Milano-Bicocca, nelle zone ad alta concentrazione di affitti brevi l'impatto sui canoni residenziali è tra il <b>5 e il 7%</b> (dato riportato dal Sole 24 Ore e da Il Giorno). Significa che ogni nuovo Airbnb spinge in alto l'affitto del vicino di casa. L'effetto non è teorico: ai Navigli, dove il 12% delle unità abitative è su piattaforme turistiche, i canoni di lungo periodo sono saliti del 42%. Le 14.084 richieste di sfratto depositate nel 2024 sono il risultato di questa pressione combinata: studenti nel mercato privato, affitti brevi che alzano i prezzi, famiglie che non reggono.</p>
 <span class="big">+5/7% sui canoni per ogni quartiere ad alta concentrazione Airbnb</span>
 <p>Il Villaggio Olimpico diventerà il più grande studentato d'Italia con 1.700 posti, a tariffe che l'assessore Tancredi considerava politicamente insostenibili. A Venezia, uno studentato Camplus è stato scoperto ad affittare le stanze ai turisti a 150 euro a notte fuori dal periodo accademico.</p>
 </div>
@@ -521,7 +586,7 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <p class="rv">Nel 2019, prima della pandemia, gli sfratti eseguiti con la forza pubblica a Milano erano circa 900. Poi la moratoria Covid: il governo blocca tutto dal marzo 2020 al dicembre 2021. Nel 2020 gli sfratti eseguiti crollano a 78. Nel 2023, ancora 133: l'arretrato si accumula, i tribunali non smaltiscono. Nel 2024 il sistema esplode: <b>1.597 sfratti eseguiti</b>, <b>14.084 richieste di esecuzione</b> depositate. I numeri dicono due cose contemporaneamente: la prima è che parte del balzo è lo smaltimento dell'arretrato post-moratoria. La seconda è che 14.084 richieste depositate in un anno non sono un arretrato, sono un flusso: più di quattro famiglie al giorno che ricevono una notifica di sfratto. E il flusso cresce perché i canoni crescono, e i canoni crescono perché la città è stata trasformata in un asset.</p>
 <div class="src rv"><a href="https://www.ilfattoquotidiano.it/2025/09/26/sfratti-italia-caro-affitti-milano-notizie/8139939/" target="_blank">Il Fatto Quotidiano, 26 set 2025</a> · <a href="https://ucs.interno.gov.it" target="_blank">Ministero dell'Interno, dati 2024</a> · <a href="https://www.zappyrent.com/it/blog/blocco-degli-sfratti-dalla-pandemia-ad-oggi-cosa-e-cambiato/" target="_blank">Zappyrent, "Blocco degli sfratti: dalla pandemia ad oggi"</a></div>
 
-<p class="rv">Il meccanismo è ciclico e si autoalimenta. Una famiglia viene sfrattata. L'appartamento entra nel mercato degli affitti brevi o viene ristrutturato e riaffittato a prezzo più alto. Il prezzo medio del quartiere sale. Il proprietario dell'appartamento accanto chiede un canone più alto al rinnovo. L'inquilino non può pagare. Viene sfrattato. Il suo appartamento entra nel mercato degli affitti brevi. Il prezzo del quartiere sale ancora. È un ciclo che si nutre di sé stesso, e ad ogni giro espelle qualcuno.</p>
+<p class="rv">Il meccanismo si alimenta da solo. Una famiglia esce. L'appartamento viene ristrutturato e riaffittato più caro, oppure messo su Airbnb. Il prezzo medio del quartiere sale. Il proprietario accanto chiede un canone più alto al rinnovo. L'inquilino non regge. Esce. Il suo appartamento viene ristrutturato. Il prezzo sale ancora. A ogni giro, qualcuno esce. Nessuno rientra.</p>
 
 <div class="nums rv-s">
 <div class="nb"><div class="v">1.597</div><div class="d">Sfratti eseguiti 2024</div></div>
@@ -546,10 +611,10 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <div class="sl rv">Sezione IX</div>
 <h2 class="rv">18.800 <em>Airbnb</em></h2>
 
-<p class="rv">18.800 appartamenti a Milano sono su Airbnb a gennaio 2026. Erano 16.200 nel 2024: 2.600 in più in un anno. Ai Navigli, il 12% delle unità abitative è in affitto breve. Il risultato? Canoni di lungo periodo nella zona: +42%. L'Università di Milano-Bicocca ha misurato l'effetto diretto: nelle zone ad alta concentrazione di Airbnb, l'impatto sui canoni residenziali è tra il <b>5 e il 7%</b>. Ogni nuovo Airbnb spinge in alto l'affitto del vicino di casa.</p>
-<div class="src rv">AirDNA, gen 2026 · Università Bicocca, studio impatto STR · <a href="https://ec.europa.eu" target="_blank">Commissione Europea, studio affitti brevi 2024</a></div>
+<p class="rv">18.800 appartamenti a Milano sono su Airbnb a gennaio 2026. Erano 16.200 nel 2024: 2.600 in più in un anno. Ai Navigli, il 12% delle unità abitative è in affitto breve. Il risultato? Canoni di lungo periodo nella zona: +42%. Secondo una ricerca dell'Università di Milano-Bicocca (riportata dal Sole 24 Ore), nelle zone ad alta concentrazione di Airbnb l'impatto sui canoni residenziali è tra il <b>5 e il 7%</b>. Ogni nuovo Airbnb spinge in alto l'affitto del vicino di casa.</p>
+<div class="src rv"><a href="https://www.airdna.co/vacation-rental-data/app/it/lombardia/milan/overview" target="_blank">AirDNA, market overview Milano</a> · <a href="https://ec.europa.eu" target="_blank">Commissione Europea, studio affitti brevi 2024</a></div>
 
-<p class="rv">Il 33% dei nuovi host registrati durante la Design Week resta attivo in modo permanente. Un evento di una settimana converte appartamenti residenziali in turistici. Quelli non tornano indietro. Le Olimpiadi sono la Design Week moltiplicata per cento: due settimane che cambiano il mercato immobiliare per i prossimi dieci anni.</p>
+<p class="rv">Il 33% dei nuovi host registrati durante la Design Week resta attivo in modo permanente. Un evento di una settimana converte appartamenti in alloggi turistici. E quelli non tornano indietro. Le Olimpiadi sono la Design Week moltiplicata per cento. Due settimane di gare. Dieci anni di affitti in più.</p>
 </div>
 
 <!-- ===== X. IL RICAMBIO ===== -->
@@ -557,13 +622,13 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <div class="sl rv">Sezione X</div>
 <h2 class="rv">Chi va, <em>chi viene</em></h2>
 <p class="rv">Fine 2025: <b>1.399.079 residenti</b>. 7.965 in meno dell'anno prima. In dieci anni, 488.000 nuove iscrizioni anagrafiche e 400.000 cancellazioni. Un terzo della popolazione è stato sostituito. Chi arriva: giovani professionisti, studenti, lavoratori temporanei. Chi parte: famiglie con figli nella fascia 35-64, residenti storici dei quartieri popolari. Giambellino, Barona, Ticinese: −2,5% di popolazione. La città non si svuota: si ricambia. Entrano persone che restano poco, spendono molto, non votano alle comunali. Una città ideale per chi la possiede: clienti, non cittadini.</p>
-<div class="src rv"><a href="https://www.istat.it" target="_blank">ISTAT, bilancio demografico</a> · Comune di Milano, Settore Statistica</div>
+<div class="src rv"><a href="https://www.istat.it" target="_blank">ISTAT, bilancio demografico</a> · <a href="http://sisi.comune.milano.it/" target="_blank">Comune di Milano, Sistema Statistico Integrato (SISI)</a></div>
 </div>
 
 <!-- ===== XI. LA RETE ===== -->
 <div class="sec" data-nav="La rete">
-<div class="w"><div class="sl rv">Sezione XI</div><h2 class="rv">La <em>rete</em></h2><p class="rv">Fondi sovrani, sgr, private equity, commissioni comunali, assessorati, studi di architettura. Le linee che li collegano sono documentate negli atti della Procura e nei bilanci societari. La mappa che segue ricostruisce le connessioni.</p></div>
-<div class="nw rv"><canvas id="net"></canvas><div class="nw-l">Connessioni da fonti giudiziarie e societarie · Muovi il mouse per esplorare</div></div>
+<div class="w"><div class="sl rv">Sezione XI</div><h2 class="rv">La <em>rete</em></h2><p class="rv">Fondi sovrani, sgr, private equity, commissioni comunali, assessorati, studi di architettura. Si conoscono tutti. Si scrivono. Si pagano. Le linee che li collegano non sono ipotesi: sono fatture, chat sequestrate, partecipazioni societarie, atti giudiziari.</p></div>
+<div class="nw rv"><canvas id="net"></canvas><div class="nw-l">Connessioni da fonti giudiziarie e societarie · Tocca o muovi il cursore per esplorare</div></div>
 </div>
 
 <!-- ===== XII. LA STRUTTURA ===== -->
@@ -581,10 +646,10 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <div class="nb"><div class="v">5,5<span class="u">%</span></div><div class="d">Rendimento residenziale</div></div>
 </div>
 
-<p class="rv">Il rendimento medio del residenziale milanese è il <b>5,5% annuo</b>: il più basso tra le grandi città italiane (Torino è al 7,2%, Napoli al 6,8%), ma applicato su masse enormi. Su 50 miliardi di asset, un rendimento del 5,5% produce 2,75 miliardi di euro all'anno di flusso estrattivo. Quei soldi escono dalla città sotto forma di canoni, plusvalenze, dividendi. Chi li paga? Gli inquilini, le aziende, gli studenti che affittano. Dove vanno? Ai fondi di Singapore, del Qatar, degli Stati Uniti, del Lussemburgo. Il prezzo di un bilocale a Corvetto finanzia il rendimento di un fondo sovrano. Questa è la struttura del trasferimento.</p>
+<p class="rv">Il rendimento medio del residenziale milanese è il <b>5,5% annuo</b>: il più basso tra le grandi città italiane (Torino è al 7,2%, Napoli al 6,8%), ma applicato su masse enormi. I 50 miliardi di asset comprendono residenziale, uffici, retail, logistica, studentati. Il residenziale pesa per circa il 35-40% del totale secondo le stime INREV: tra 17 e 20 miliardi. Un rendimento del 5,5% su questa base produce tra 950 milioni e 1,1 miliardi di euro all'anno di flusso estrattivo dal solo settore abitativo. Se si considerano tutti i settori, con rendimenti medi del 4-5% sui 50 miliardi complessivi, l'ordine di grandezza sale a <b>2-2,5 miliardi all'anno</b> che escono dalla città sotto forma di canoni, plusvalenze, dividendi. Chi li paga? Gli inquilini, le aziende, gli studenti che affittano. Dove vanno? Ai fondi di Singapore, del Qatar, degli Stati Uniti, del Lussemburgo. Il prezzo di un bilocale a Corvetto finanzia il rendimento di un fondo sovrano. Questa è la struttura del trasferimento.</p>
 <div class="src rv"><a href="https://m.dellevittorie.it/rendimenti-immobiliari-terzo-trimestre-2024-idealista/" target="_blank">Idealista, rendimenti immobiliari Q3 2024</a> · <a href="https://www.assoimmobiliare.it/inrev-lanalisi-delle-performance-dei-fondi-immobiliari-europei/" target="_blank">INREV / Assoimmobiliare, performance fondi europei</a></div>
 
-<p class="rv">Il sistema funziona perché l'Italia lo consente. L'edilizia residenziale pubblica italiana rappresenta il <b>3,7% del patrimonio abitativo</b>: una delle percentuali più basse d'Europa. La media europea è il 9%. I Paesi Bassi sono al 29%, l'Austria al 24%, la Francia al 17%, la Danimarca al 20%. L'Italia non ha una politica della casa. A Milano il patrimonio ERP scende (da 65.986 a 62.457 alloggi in sei anni) mentre le domande salgono (17.000 per 500 posti). La corruzione documentata dalla Procura è l'aggravante di un reato già in corso da decenni: l'abbandono della funzione pubblica nell'abitare. I fondi internazionali hanno riempito il vuoto lasciato dallo Stato. Il prezzo lo pagano i residenti.</p>
+<p class="rv">Il sistema funziona perché l'Italia lo consente. La corruzione documentata dalla Procura è l'aggravante di un reato già in corso da decenni: l'abbandono della funzione pubblica nell'abitare. L'edilizia residenziale pubblica italiana è il <b>3,7% del patrimonio abitativo</b>. I Paesi Bassi: 29%. L'Austria: 24%. La Danimarca: 20%. La Francia: 17%. La media europea: 9%. L'Italia: 3,7%. A Milano il patrimonio ERP scende (da 65.986 a 62.457 alloggi in sei anni) mentre le domande salgono (17.000 per 500 posti). I fondi internazionali hanno riempito il vuoto lasciato dallo Stato. Il prezzo lo pagano i residenti.</p>
 <div class="src rv"><a href="https://www.oecd.org/content/dam/oecd/it/publications/reports/2023/10/housing-in-italy-through-the-telescope-and-the-microphone_111d5b6d/f76c3093-it.pdf" target="_blank">OCSE, "Housing in Italy", ott 2023</a> · <a href="https://www.nuoverigenerazioni.eu/tutte-le-news/1383-lo-stato-dell-edilizia-abitativa-in-europa" target="_blank">Housing Europe, "Lo stato dell'edilizia abitativa", 2023</a></div>
 
 <p class="rv">La rigenerazione urbana è avvenuta. Porta Nuova nel 2005 era un buco nero tra la Stazione Garibaldi e l'Isola: aree dismesse, sottopassi degradati. Lo Scalo di Porta Romana era un relitto ferroviario. L'area Expo era un cantiere abbandonato. Oggi sono quartieri funzionanti. La domanda che il sito pone non è se dovessero essere rigenerati. Dovevano. La domanda è chi ne ha tratto vantaggio e chi ne ha pagato il costo. La risposta è nei numeri che precedono: capitali globali, corruzione locale, assenza di politiche nazionali della casa hanno prodotto una redistribuzione massiccia di valore dai residenti agli investitori. I residenti pagano di più, possiedono di meno, decidono di meno. Gli investitori pagano di meno (oneri congelati per quindici anni, SCIA al posto di piani attuativi, commissioni compiacenti), possiedono di più, e quando l'indagine arriva, scrivono la legge per fermarla.</p>
@@ -608,10 +673,10 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 
 <div class="analysis rv">
 <h3>Le nove evidenze</h3>
-<p><b>1.</b> Rapporto canone/reddito al 76% per un lavoratore singolo. La soglia critica internazionale è il 30%. Milano è la prima città italiana per sofferenza abitativa (indice CDP/IFAL).</p>
+<p><b>1.</b> Rapporto canone/reddito al 76% per un lavoratore singolo che affitta un bilocale in semicentro; 38-40% per una coppia con due stipendi medi. In entrambi i casi, sopra la soglia critica internazionale del 30%. Milano è la prima città italiana per sofferenza abitativa (CDP).</p>
 <p><b>2.</b> 50 miliardi di euro in asset immobiliari dei fondi su Milano in dieci anni, di cui 30 miliardi di capitali esteri. Il 55% degli investimenti immobiliari stranieri in Italia finisce qui.</p>
 <p><b>3.</b> 74 indagati, 36 verso il processo nel primo filone chiuso. Corte dei Conti: 10 istruttorie, 85 milioni di danno erariale stimato.</p>
-<p><b>4.</b> Nelle zone ad alta concentrazione di Airbnb, l'impatto sui canoni residenziali è tra il 5 e il 7% (Università Bicocca). Ai Navigli, dove il 12% delle unità è su piattaforme turistiche, i canoni sono saliti del 42%.</p>
+<p><b>4.</b> Nelle zone ad alta concentrazione di Airbnb, l'impatto sui canoni residenziali è tra il 5 e il 7% (ricerca Università di Milano-Bicocca, riportata dal Sole 24 Ore). Ai Navigli, dove il 12% delle unità è su piattaforme turistiche, i canoni sono saliti del 42%.</p>
 <p><b>5.</b> Il 93% degli studenti fuorisede compete con i residenti sul mercato privato: 35.500 persone in più nella domanda abitativa.</p>
 <p><b>6.</b> La forbice canoni/salari si è aperta del 61% in dieci anni. I canoni crescono, i salari scendono.</p>
 <p><b>7.</b> Gli oneri urbanistici sono rimasti fermi per 15 anni. L'aggiornamento ha quadruplicato gli incassi: il regalo era strutturale.</p>
@@ -623,13 +688,13 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 <!-- FINDING -->
 <div class="finding sec" data-nav="Conclusione">
 <h2 class="rv">Chi ha comprato Milano?<br><em>Nessuno.</em></h2>
-<p class="sub rv">Milano è diventata un rendimento. 50 miliardi di asset, 2,75 miliardi estratti ogni anno dai canoni di chi ci vive. La corruzione ha abbassato il prezzo d'ingresso. L'assenza dello Stato ha garantito il rendimento. L'estratto conto è ancora aperto.</p>
+<p class="sub rv">Milano è diventata un rendimento. 50 miliardi di asset, oltre 2 miliardi estratti ogni anno sotto forma di canoni, plusvalenze e dividendi. La corruzione ha abbassato il prezzo d'ingresso. L'assenza dello Stato ha garantito il rendimento. L'estratto conto è ancora aperto.</p>
 <p class="fs rv">OGNI CIFRA È VERIFICABILE · OGNI FONTE È PUBBLICA · OGNI LINK È CLICCABILE</p>
 </div>
 
 <!-- SHARE -->
 <div class="share-section">
-<p>Se pensi che questi dati debbano circolare, condividi.</p>
+<p>Hai letto i numeri. Hai visto i nomi. Adesso scegli se farli girare.</p>
 <div class="share-btns">
 <a class="share-btn" href="https://wa.me/?text=Ho%20trovato%20questa%20inchiesta%20su%20Milano.%20Tutti%20i%20dati%20sono%20veri.%20Guardate%20i%20nomi.%20chihacompratomilano.it" target="_blank" rel="noopener">WhatsApp</a>
 <a class="share-btn" href="https://t.me/share/url?url=https://chihacompratomilano.it&text=Ho%20trovato%20questa%20inchiesta%20su%20Milano.%20Tutti%20i%20dati%20sono%20veri.%20Guardate%20i%20nomi." target="_blank" rel="noopener">Telegram</a>
@@ -640,7 +705,7 @@ p{font-size:.96rem;font-weight:300;margin-bottom:1.3rem;color:#444}p b{color:var
 
 <!-- TELEGRAM GROUP -->
 <div class="tg-section">
-<p>Hai condiviso sapendo. Ora osserva cosa succede.</p>
+<p>Hai condiviso. Adesso osserva cosa succede.</p>
 <a class="tg-btn" href="https://t.me/+PLACEHOLDER_INVITE_LINK" target="_blank" rel="noopener">Entra in "I complici di Milano" →</a>
 </div>
 
@@ -826,6 +891,8 @@ tip.style.top=(e.clientY-rect.top-10)+'px';
 }else{tip.style.opacity='0';}
 });
 mc.addEventListener('mouseleave',()=>{hovered=-1;drawMap();tip.style.opacity='0';});
+mc.addEventListener('touchstart',e=>{e.preventDefault();const touch=e.touches[0];const idx=getZone(touch.clientX,touch.clientY);hovered=idx;drawMap();if(idx!==-1){const z=zones[idx];tip.innerHTML=`<div class="tt-name">${z.name}</div><div class="tt-price">${z.price}</div><div>Reddito medio: ${z.income}</div>`;tip.style.opacity='1';const rect=container.getBoundingClientRect();tip.style.left=Math.min(touch.clientX-rect.left+10,rect.width-180)+'px';tip.style.top=(touch.clientY-rect.top-60)+'px';}else{tip.style.opacity='0';}},{passive:false});
+mc.addEventListener('touchend',()=>{setTimeout(()=>{hovered=-1;drawMap();tip.style.opacity='0';},1500);});
 })();
 
 // NETWORK — interactive
@@ -959,6 +1026,8 @@ ntip.style.top=(e.clientY-pr.top-10)+'px';
 }else{ntip.style.opacity='0';}
 });
 nc.addEventListener('mouseleave',()=>{hovN=-1;ntip.style.opacity='0';});
+nc.addEventListener('touchstart',function(e){e.preventDefault();const touch=e.touches[0];const rect=nc.getBoundingClientRect();const tmx=touch.clientX-rect.left,tmy=touch.clientY-rect.top;const W=nc.width,H=nc.height,t=Date.now()*.0004;const sx=W/rect.width,sy=H/rect.height;let found=-1;N.forEach((n,i)=>{const x=n.x*W+Math.sin(t+i*1.5)*3,y=n.y*H+Math.cos(t+i*.9)*2;const dx=tmx*sx-x,dy=tmy*sy-y;if(Math.sqrt(dx*dx+dy*dy)<n.r+15)found=i;});hovN=found;if(found!==-1){const n=N[found];ntip.innerHTML=`<div style="font-weight:700;font-size:.7rem;margin-bottom:.2rem;color:${n.c}">${n.id}</div><div style="color:rgba(255,255,255,.6)">${n.role}</div>`;ntip.style.opacity='1';const pr=nc.parentElement.getBoundingClientRect();ntip.style.left=Math.min(touch.clientX-pr.left+10,pr.width-180)+'px';ntip.style.top=(touch.clientY-pr.top-60)+'px';}else{ntip.style.opacity='0';}},{passive:false});
+nc.addEventListener('touchend',()=>{setTimeout(()=>{hovN=-1;ntip.style.opacity='0';},2000);});
 window.addEventListener('resize',rz);
 })();
 </script>
